@@ -46,6 +46,9 @@ module.exports.routes = {
   *                                                                          *
   ***************************************************************************/
 
-  'POST /manager/signup': 'Manager.signup',
+  // 'POST /manager/signup': 'Manager.signup',
   'POST /manager/login':  'Manager.login',
+  
+  'POST /store/signup': 'Store.signup',
+  'POST /store/login':  'Store.login',
 };

@@ -4,19 +4,13 @@
  * @description :: The Store table
  * @docs        :: http://sailsjs.org/#!documentation/models
  */
+const bcrypt = require('bcrypt')
 
 module.exports = {
   tableName: 'store',
   autoCreatedAt: false,
   autoUpdatedAt: false,
   attributes: {
-    id: {
-      type: 'integer',
-      required: true,
-      autoIncrement: true,
-      primaryKey: true,
-      size: 11
-    },
     mobile: {
       type: 'string',
       required: true,
@@ -63,5 +57,27 @@ module.exports = {
       type: 'datetime',
       required: true
     }
+  },
+
+  // Here we encrypt password before creating a User 
+  beforeCreate : function (values, next) {
+    bcrypt.genSalt(10, function (err, salt) {
+      if(err) return next(err);
+      bcrypt.hash(values.password, salt, function (err, hash) {
+        if(err) return next(err);
+        values.password = hash;
+        next();
+      })
+    })
+  },
+  comparePassword : function (password, user, cb) {
+    bcrypt.compare(password, user.password, function (err, match) {
+      if(err) cb(err);
+      if(match) {
+        cb(null, true);
+      } else {
+        cb(err);
+      }
+    })
   }
 };
