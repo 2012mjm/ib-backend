@@ -19,7 +19,14 @@ module.exports = {
         }
 
         if (store) {
-          resolve({token: JwtService.issue({ id: store.id })})
+          resolve({
+            id: store.id,
+            mobile: store.mobile,
+            email: store.email,
+            store_name: store.name,
+            store_owner: store.owner,
+            token: JwtService.issue({ id: store.id, isAdmin: false }, true)
+          })
         } else {
           reject(sails.__('Error in signup'))
         }
@@ -48,6 +55,7 @@ module.exports = {
               mobile: store.mobile,
               email: store.email,
               store_name: store.name,
+              store_owner: store.owner,
               token: JwtService.issue({ id: store.id, isAdmin: false }, true)
             })
           }
