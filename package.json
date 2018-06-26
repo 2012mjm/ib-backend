@@ -1,8 +1,8 @@
 {
-  "name": "chatServer",
+  "name": "IraniBekharim",
   "private": true,
   "version": "0.0.1",
-  "description": "Chat application",
+  "description": "IraniBekharim",
   "keywords": [],
   "dependencies": {
     "bcrypt": "^1.0.2",
@@ -46,7 +46,7 @@
   "main": "app.js",
   "repository": {
     "type": "git",
-    "url": "git://github.com/root/tpanServer.git"
+    "url": "git://github.com/root/IraniBekharim.git"
   },
   "author": "root",
   "license": ""

@@ -25,7 +25,7 @@ module.exports = {
             email: store.email,
             store_name: store.name,
             store_owner: store.owner,
-            token: JwtService.issue({ id: store.id, isAdmin: false }, true)
+            token: JwtService.issue({ storeId: store.id, role: 'store', isAdmin: false }, true)
           })
         } else {
           reject(sails.__('Error in signup'))
@@ -56,7 +56,7 @@ module.exports = {
               email: store.email,
               store_name: store.name,
               store_owner: store.owner,
-              token: JwtService.issue({ id: store.id, isAdmin: false }, true)
+              token: JwtService.issue({ storeId: store.id, role: 'store', isAdmin: false }, true)
             })
           }
         })

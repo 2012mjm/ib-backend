@@ -1,26 +1,28 @@
 /**
- * City.js
+ * Product_color.js
  *
- * @description :: The City table
+ * @description :: The Product_color table
  * @docs        :: http://sailsjs.org/#!documentation/models
  */
 
 module.exports = {
-  tableName: 'city',
+  tableName: 'product_color',
   autoCreatedAt: false,
   autoUpdatedAt: false,
   attributes: {
-    provinceId: {
+    productId: {
       type: 'integer',
       required: true,
       index: true,
       size: 11,
-      model: 'province'
+      model: 'product'
     },
-    name: {
-      type: 'string',
+    colorId: {
+      type: 'integer',
       required: true,
-      size: 45
+      index: true,
+      size: 11,
+      model: 'color'
     }
   }
 };

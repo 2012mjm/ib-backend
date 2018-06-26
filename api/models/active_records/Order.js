@@ -47,9 +47,8 @@ module.exports = {
       defaultsTo: null
     },
     createdAt: {
-      type: 'integer',
-      required: true,
-      size: 11
+      type: 'datetime',
+      required: true
     }
   }
 };

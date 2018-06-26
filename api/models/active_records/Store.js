@@ -28,21 +28,37 @@ module.exports = {
       size: 255,
       defaultsTo: null
     },
-    owner: {
+    ownerFa: {
       type: 'string',
       required: false,
       size: 45,
       defaultsTo: null
     },
-    name: {
+    ownerEn: {
+      type: 'string',
+      required: false,
+      size: 45,
+      defaultsTo: null
+    },
+    nameFa: {
       type: 'string',
       required: true,
       size: 45
     },
-    description: {
+    nameEn: {
       type: 'string',
       required: false,
       size: 45,
+      defaultsTo: null
+    },
+    descriptionFa: {
+      type: 'text',
+      required: false,
+      defaultsTo: null
+    },
+    descriptionEn: {
+      type: 'text',
+      required: false,
       defaultsTo: null
     },
     logoId: {

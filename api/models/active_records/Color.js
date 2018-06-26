@@ -1,22 +1,15 @@
 /**
- * Subcategory.js
+ * Color.js
  *
- * @description :: The Subcategory table
+ * @description :: The Color table
  * @docs        :: http://sailsjs.org/#!documentation/models
  */
 
 module.exports = {
-  tableName: 'subcategory',
+  tableName: 'color',
   autoCreatedAt: false,
   autoUpdatedAt: false,
   attributes: {
-    categoryId: {
-      type: 'integer',
-      required: true,
-      index: true,
-      size: 11,
-      model: 'category'
-    },
     nameFa: {
       type: 'string',
       required: true,
@@ -28,10 +21,16 @@ module.exports = {
       size: 45,
       defaultsTo: null
     },
-    photoId: {
-      type: 'integer',
+    code: {
+      type: 'string',
       required: false,
-      size: 11,
+      size: 45,
+      defaultsTo: null
+    },
+    photoId: {
+      type: 'string',
+      required: false,
+      size: 45,
       defaultsTo: null
     }
   }

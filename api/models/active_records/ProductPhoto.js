@@ -23,6 +23,12 @@ module.exports = {
       index: true,
       size: 11,
       model: 'file'
+    },
+    isMain: {
+      type: 'integer',
+      required: true,
+      size: 1,
+      defaultsTo: '0'
     }
   }
 };

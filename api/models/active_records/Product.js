@@ -10,13 +10,6 @@ module.exports = {
   autoCreatedAt: false,
   autoUpdatedAt: false,
   attributes: {
-    subcategoryId: {
-      type: 'integer',
-      required: true,
-      index: true,
-      size: 11,
-      model: 'subcategory'
-    },
     storeId: {
       type: 'integer',
       required: true,
@@ -24,20 +17,46 @@ module.exports = {
       size: 11,
       model: 'store'
     },
-    photoId: {
+    categoryId: {
+      type: 'integer',
+      required: true,
+      index: true,
+      size: 11,
+      model: 'category'
+    },
+    subcategoryId: {
       type: 'integer',
       required: false,
       index: true,
       size: 11,
       defaultsTo: null,
-      model: 'file'
+      model: 'subcategory'
     },
-    name: {
+    secondSubcategoryId: {
+      type: 'integer',
+      required: false,
+      index: true,
+      size: 11,
+      defaultsTo: null,
+      model: 'secondSubcategory'
+    },
+    nameFa: {
       type: 'string',
       required: true,
       size: 128
     },
-    description: {
+    nameEn: {
+      type: 'string',
+      required: false,
+      size: 128,
+      defaultsTo: null
+    },
+    descriptionFa: {
+      type: 'text',
+      required: false,
+      defaultsTo: null
+    },
+    descriptionEn: {
       type: 'text',
       required: false,
       defaultsTo: null
@@ -46,6 +65,12 @@ module.exports = {
       type: 'integer',
       required: true,
       size: 20
+    },
+    discount: {
+      type: 'integer',
+      required: false,
+      size: 20,
+      defaultsTo: null
     },
     quantity: {
       type: 'integer',
@@ -58,10 +83,9 @@ module.exports = {
       defaultsTo: null
     },
     star: {
-      type: 'integer',
+      type: 'decimal',
       required: true,
-      size: 11,
-      defaultsTo: '0'
+      defaultsTo: '0.00'
     },
     status: {
       type: 'string',
@@ -69,9 +93,20 @@ module.exports = {
       enum: ['pending', 'accepted', 'rejected'],
       defaultsTo: 'pending'
     },
+    rejectReason: {
+      type: 'string',
+      required: false,
+      size: 255,
+      defaultsTo: null
+    },
     createdAt: {
       type: 'datetime',
       required: true
+    },
+    updatedAt: {
+      type: 'datetime',
+      required: false,
+      defaultsTo: null
     }
   }
 };

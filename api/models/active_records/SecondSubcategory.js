@@ -1,21 +1,21 @@
 /**
- * Subcategory.js
+ * SecondSubcategory.js
  *
- * @description :: The Subcategory table
+ * @description :: The SecondSubcategory table
  * @docs        :: http://sailsjs.org/#!documentation/models
  */
 
 module.exports = {
-  tableName: 'subcategory',
+  tableName: 'secondSubcategory',
   autoCreatedAt: false,
   autoUpdatedAt: false,
   attributes: {
-    categoryId: {
+    subcategoryId: {
       type: 'integer',
       required: true,
       index: true,
       size: 11,
-      model: 'category'
+      model: 'subcategory'
     },
     nameFa: {
       type: 'string',
@@ -26,12 +26,6 @@ module.exports = {
       type: 'string',
       required: false,
       size: 45,
-      defaultsTo: null
-    },
-    photoId: {
-      type: 'integer',
-      required: false,
-      size: 11,
       defaultsTo: null
     }
   }
