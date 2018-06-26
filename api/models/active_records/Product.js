@@ -24,22 +24,6 @@ module.exports = {
       size: 11,
       model: 'category'
     },
-    subcategoryId: {
-      type: 'integer',
-      required: false,
-      index: true,
-      size: 11,
-      defaultsTo: null,
-      model: 'subcategory'
-    },
-    secondSubcategoryId: {
-      type: 'integer',
-      required: false,
-      index: true,
-      size: 11,
-      defaultsTo: null,
-      model: 'secondSubcategory'
-    },
     nameFa: {
       type: 'string',
       required: true,

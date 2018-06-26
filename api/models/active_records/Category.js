@@ -10,6 +10,14 @@ module.exports = {
   autoCreatedAt: false,
   autoUpdatedAt: false,
   attributes: {
+    parentId: {
+      type: 'integer',
+      required: false,
+      index: true,
+      size: 11,
+      defaultsTo: null,
+      model: 'category'
+    },
     nameFa: {
       type: 'string',
       required: true,
@@ -24,8 +32,10 @@ module.exports = {
     photoId: {
       type: 'integer',
       required: false,
+      index: true,
       size: 11,
-      defaultsTo: null
+      defaultsTo: null,
+      model: 'file'
     },
     color: {
       type: 'string',
