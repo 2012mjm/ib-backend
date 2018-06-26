@@ -46,15 +46,15 @@ module.exports.routes = {
   *                                                                          *
   ***************************************************************************/
 
-  'POST /manager/signup': 'Manager.signup',
-  'POST /manager/login':  'Manager.login',
+  'POST /api/v1/manager/signup': 'Manager.signup',
+  'POST /api/v1/manager/login':  'Manager.login',
   
-  'POST /store/signup': 'Store.signup',
-  'POST /store/login':  'Store.login',
+  'POST /api/v1/store/signup': 'Store.signup',
+  'POST /api/v1/store/login':  'Store.login',
 
-  'POST /product/add':  'Product.add',
+  'POST /api/v1/product/add':  'Product.add',
 
-  'POST /category/add':  'Category.add',
-  'POST /subcategory/add':  'Subcategory.add',
-  'GET /category/list':  'Category.list',
+  'POST /api/v1/category/add':  'Category.add',
+  'POST /api/v1/subcategory/add':  'Subcategory.add',
+  'GET /api/v1/category/list':  'Category.list',
 };
