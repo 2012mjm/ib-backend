@@ -7,30 +7,32 @@ module.exports = {
   add: (attr) => {
     return new Promise((resolve, reject) =>
     {
-      Product.create(Object.assign(attr, {
-        sub: attr.mobile,
-        password: attr.password,
-        email: attr.email,
-        name: attr.store_name,
+      Product.create({
+        storeId: attr.store_id,
+        categoryId: attr.category_id,
+        nameFa: attr.name_fa,
+        nameEn: attr.name_en || null,
+        descriptionFa: attr.description_fa || null,
+        descriptionEn: attr.description_en || null,
+        price: attr.price,
+        discount: attr.discount || null,
+        quantity: attr.quantity || 0,
+        weight: attr.weight,
+        status: 'pending',
         createdAt: moment().format('YYYY-MM-DD HH:mm:ss'),
-      })).exec(function (err, store) {
+      }).exec((err, model) => {
+        // console.log(err)
         if (err) {
-          return reject(err)
+          return reject('خطایی رخ داده است، دوباره تلاش کنید.')
         }
 
-        if (store) {
-          resolve({
-            id: store.id,
-            mobile: store.mobile,
-            email: store.email,
-            store_name: store.name,
-            store_owner: store.owner,
-            token: JwtService.issue({ storeId: store.id, type: 'store', isAdmin: false }, true)
-          })
+        if (model) {
+          resolve({message: ['محصول جدید با موفقیت ایجاد شد.'], id: model.id})
         } else {
-          reject(sails.__('Error in signup'))
+          reject('خطایی رخ داده است، دوباره تلاش کنید.')
         }
       })
     })
   },
 }
+

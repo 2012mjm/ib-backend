@@ -12,9 +12,37 @@ module.exports = {
       type: 'email',
       required: false,
     },
-    store_name: {
+    store_name_fa: {
       type: 'string',
       required: true,
-    }
+    },
+    store_name_en: {
+      type: 'string',
+      required: false,
+      size: 45,
+      defaultsTo: null
+    },
+    owner_fa: {
+      type: 'string',
+      required: false,
+      size: 45,
+      defaultsTo: null
+    },
+    owner_en: {
+      type: 'string',
+      required: false,
+      size: 45,
+      defaultsTo: null
+    },
+    description_fa: {
+      type: 'text',
+      required: false,
+      defaultsTo: null
+    },
+    description_en: {
+      type: 'text',
+      required: false,
+      defaultsTo: null
+    },
   },
 };

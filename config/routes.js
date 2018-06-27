@@ -55,6 +55,5 @@ module.exports.routes = {
   'POST /api/v1/product/add':  'Product.add',
 
   'POST /api/v1/category/add':  'Category.add',
-  'POST /api/v1/subcategory/add':  'Subcategory.add',
   'GET /api/v1/category/list':  'Category.list',
 };

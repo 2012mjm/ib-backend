@@ -11,7 +11,12 @@ module.exports = {
         mobile: attr.mobile,
         password: attr.password,
         email: attr.email,
-        name: attr.store_name,
+        nameFa: attr.store_name_fa,
+        nameEn: attr.store_name_en || null,
+        ownerFa: attr.owner_fa || null,
+        ownerEn: attr.owner_en || null,
+        descriptionFa: attr.description_fa || null,
+        descriptionEn: attr.description_en || null,
         createdAt: moment().format('YYYY-MM-DD HH:mm:ss'),
       }).exec(function (err, store) {
         if (err) {
@@ -23,8 +28,10 @@ module.exports = {
             id: store.id,
             mobile: store.mobile,
             email: store.email,
-            store_name: store.name,
-            store_owner: store.owner,
+            store_name_fa: store.nameFa,
+            store_name_en: store.nameEn,
+            store_owner_fa: store.ownerFa,
+            store_owner_en: store.ownerEn,
             token: JwtService.issue({ storeId: store.id, role: 'store', isAdmin: false }, true)
           })
         } else {
@@ -54,8 +61,10 @@ module.exports = {
               id: store.id,
               mobile: store.mobile,
               email: store.email,
-              store_name: store.name,
-              store_owner: store.owner,
+              store_name_fa: store.nameFa,
+              store_name_en: store.nameEn,
+              store_owner_fa: store.ownerFa,
+              store_owner_en: store.ownerEn,
               token: JwtService.issue({ storeId: store.id, role: 'store', isAdmin: false }, true)
             })
           }
