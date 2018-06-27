@@ -66,7 +66,7 @@ const self = module.exports = {
               name_fa: row.nameFa,
               name_en: row.nameEn,
               color: row.color,
-              photo: (row.photoId) ? `${sails.getBaseUrl()}${row.photoPath}${row.photoName}` : null
+              photo: (row.photoId) ? `${sails.config.params.apiUrl}${row.photoPath}${row.photoName}` : null
             }
           }
           else if(row.pId2 === null) {
@@ -76,7 +76,7 @@ const self = module.exports = {
               id: row.id,
               name_fa: row.nameFa,
               name_en: row.nameEn,
-              photo: (row.photoId) ? `${sails.getBaseUrl()}${row.photoPath}${row.photoName}` : null
+              photo: (row.photoId) ? `${sails.config.params.apiUrl}${row.photoPath}${row.photoName}` : null
             }
           }
           else {
