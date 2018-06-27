@@ -60,4 +60,8 @@ module.exports.policies = {
       'login': true, // We dont need authorization here, allowing public access
       'signup': true
     },
+
+    'CategoryController': {
+      'list': true,
+    },
 };
