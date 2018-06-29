@@ -1,6 +1,6 @@
 os = require('os')
 os.tmpDir = os.tmpdir
-var moment = require('moment')
+const moment = require('moment')
 
 const self = module.exports = {
 
@@ -20,6 +20,22 @@ const self = module.exports = {
     })
   },
 
+  edit: (id, attr) => {
+    return new Promise((resolve, reject) =>
+    {
+      if(attr.photo._files.length > 0) {
+        FileService.addPhoto(attr.photo).then(res => {
+          attr.photoId = res.id
+          self.update(id, attr).then(resolve, reject)
+        })
+      }
+      else {
+        attr.photo.upload({noop: true})
+        self.update(id, attr).then(resolve, reject)
+      }
+    })
+  },
+
   create: (attr) => {
     return new Promise((resolve, reject) =>
     {
@@ -35,10 +51,67 @@ const self = module.exports = {
         }
 
         if (model) {
-          resolve({message: ['دسته جدید با موفقیت ایجاد شد.'], id: model.id})
+          resolve({messages: ['دسته جدید با موفقیت ایجاد شد.'], id: model.id})
         } else {
           reject('خطایی رخ داده است، دوباره تلاش کنید.')
         }
+      })
+    })
+  },
+
+  update: (id, attr) => {
+    return new Promise((resolve, reject) =>
+    {
+      let newAttr = {}
+
+      if(attr.name_fa)    newAttr.nameFa = attr.name_fa
+      if(attr.name_en)    newAttr.nameEn = attr.name_en
+      if(attr.photoId)    newAttr.photoId = attr.photoId
+      if(attr.parentId)   newAttr.parentId = attr.parentId
+      if(attr.color)      newAttr.color = attr.color
+
+      Category.update({id: id}, newAttr).exec((err, model) => {
+        if (err) {
+          return reject('خطایی رخ داده است، دوباره تلاش کنید.')
+        }
+        resolve({messages: ['دسته مورد نظر با موفقیت ویرایش شد.']})
+      })
+    })
+  },
+
+  delete: (id) => {
+    return new Promise((resolve, reject) =>
+    {
+      const query = 'SELECT c.id c1, c2.id c2, c3.id c3 FROM `category` c \
+                      LEFT JOIN category c2 ON c2.parentId = c.id \
+                      LEFT JOIN category c3 ON c3.parentId = c2.id \
+                      WHERE c.id = ? \
+                      ORDER BY c3.id DESC, c2.id DESC'
+                      
+      Category.query(query, [id], (err, rows) => {
+        if (err || rows.length === 0) return reject('دسته ای برای حذف یافت نشد.')
+
+        listIds = []
+        rows.forEach(row => {
+          if(row.c3 !== null && listIds.indexOf(row.c3) === -1) listIds.push(row.c3)
+          if(row.c2 !== null && listIds.indexOf(row.c2) === -1) listIds.push(row.c2)
+          if(row.c1 !== null && listIds.indexOf(row.c1) === -1) listIds.push(row.c1)
+        })
+        listIds = listIds.sort((a, b) => b - a)
+
+        ProductService.deleteByCatgoryList(listIds).then(() =>
+        {
+          Category.query(`SET FOREIGN_KEY_CHECKS=0; \
+                            DELETE from category WHERE id IN (${listIds.join(',')}); \
+                            SET FOREIGN_KEY_CHECKS=1`, (err, rows) => {
+
+            if (err) return reject('دسته‌های مورد نظر حذف نشد، دوباره تلاش کنید.')
+
+            resolve({messages: ['دسته مورد نظر و زیر دسته‌های آن با موفقیت حذف شد.']})
+          })
+        }, err => {
+          return reject(err)
+        })
       })
     })
   },
@@ -63,8 +136,10 @@ const self = module.exports = {
           if(row.pId === null && row.pId2 === null) {
             list[row.id] = {
               id: row.id,
-              name_fa: row.nameFa,
-              name_en: row.nameEn,
+              name: {
+                fa: row.nameFa,
+                en: row.nameEn,
+              },
               color: row.color,
               photo: (row.photoId) ? `${sails.config.params.apiUrl}${row.photoPath}${row.photoName}` : null
             }
@@ -74,8 +149,10 @@ const self = module.exports = {
 
             list[row.pId].child[row.id] = {
               id: row.id,
-              name_fa: row.nameFa,
-              name_en: row.nameEn,
+              name: {
+                fa: row.nameFa,
+                en: row.nameEn,
+              },
               photo: (row.photoId) ? `${sails.config.params.apiUrl}${row.photoPath}${row.photoName}` : null
             }
           }
@@ -84,8 +161,10 @@ const self = module.exports = {
 
             list[row.pId2].child[row.pId].child[row.id] = {
               id: row.id,
-              name_fa: row.nameFa,
-              name_en: row.nameEn,
+              name: {
+                fa: row.nameFa,
+                en: row.nameEn,
+              },
             }
           }
         })

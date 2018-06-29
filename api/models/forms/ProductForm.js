@@ -55,6 +55,11 @@ module.exports = {
       type: 'decimal',
       required: false,
       defaultsTo: null
+    },
+    status: {
+      type: 'string',
+      required: false,
+      defaultsTo: 'pending'
     }
   },
 };

@@ -46,14 +46,20 @@ module.exports.routes = {
   *                                                                          *
   ***************************************************************************/
 
-  'POST /api/v1/manager/signup': 'Manager.signup',
-  'POST /api/v1/manager/login':  'Manager.login',
+  'POST /api/v1/manager/signup':    'Manager.signup',
+  'POST /api/v1/manager/login':     'Manager.login',
   
-  'POST /api/v1/store/signup': 'Store.signup',
-  'POST /api/v1/store/login':  'Store.login',
+  'POST /api/v1/store/signup':      'Store.signup',
+  'POST /api/v1/store/login':       'Store.login',
+  'GET /api/v1/store':              'Store.list',
+  'GET /api/v1/store/list-panel':   'Store.listPanel',
 
-  'POST /api/v1/product/add':  'Product.add',
+  'POST /api/v1/category':          'Category.add',
+  'GET /api/v1/category':           'Category.list',
+  'PUT /api/v1/category':           'Category.edit',
+  'DELETE /api/v1/category':        'Category.delete',
 
-  'POST /api/v1/category/add':  'Category.add',
-  'GET /api/v1/category/list':  'Category.list',
+  'POST /api/v1/product':           'Product.add',
+  'GET /api/v1/product':            'Product.list',
+  'GET /api/v1/product/list-panel': 'Product.listPanel',
 };

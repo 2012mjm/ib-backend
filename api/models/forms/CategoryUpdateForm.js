@@ -2,21 +2,28 @@ const FileValidator = require('../../../helper/FileValidator')
 
 module.exports = {
   attributes: {
+    id: {
+      type: 'integer',
+      required: true,
+    },
     parentId: {
       type: 'integer',
       required: false,
     },
     name_fa: {
       type: 'string',
-      required: true,
+      required: false,
+      size: 45
     },
     name_en: {
       type: 'string',
       required: false,
+      size: 45
     },
     color: {
       type: 'string',
       required: false,
+      size: 45
     },
     photo: {
       // photoRequired: true,

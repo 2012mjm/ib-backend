@@ -1,6 +1,6 @@
-os = require('os');
-os.tmpDir = os.tmpdir;
-var moment = require('moment');
+os = require('os')
+os.tmpDir = os.tmpdir
+const moment = require('moment')
 
 module.exports = {
 
@@ -14,16 +14,16 @@ module.exports = {
         createdAt: moment().format('YYYY-MM-DD HH:mm:ss'),
       }).exec(function (err, manager) {
         if (err) {
-          return reject(err);
+          return reject('مشکلی پیش آمده است دوباره تلاش کنید.')
         }
 
         if (manager) {
-          resolve({token: JwtService.issue({ managerId: manager.id, role: 'manager', isAdmin: true })});
+          resolve({token: JwtService.issue({ managerId: manager.id, role: 'manager', isAdmin: true })})
         } else {
-          reject(sails.__('Error in signup'));
+          reject('مشکلی پیش آمده است دوباره تلاش کنید.')
         }
-      });
-    });
+      })
+    })
   },
 
   login: (attr) => {
@@ -31,26 +31,26 @@ module.exports = {
     {
       Manager.findOne({username: attr.username}, function (err, manager) {
         if (!manager) {
-          return reject('invalid username or password');
+          return reject('نام کاربری یا کلمه عبور صحیح نمی باشد.')
         }
 
         Manager.comparePassword(attr.password, manager, function (err, valid) {
           if (err) {
-            return reject('forbidden');
+            return reject('نام کاربری یا کلمه عبور صحیح نمی باشد.')
           }
 
           if (!valid) {
-            return reject('invalid username or password');
+            return reject('نام کاربری یا کلمه عبور صحیح نمی باشد.')
           } else {
             resolve({
               id: manager.id,
               username: manager.username,
               email: manager.email,
               token: JwtService.issue({ managerId: manager.id, role: 'manager', isAdmin: true }, attr.remember_me)
-            });
+            })
           }
-        });
-      });
-    });
+        })
+      })
+    })
   },
 }
