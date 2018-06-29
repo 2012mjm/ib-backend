@@ -2,7 +2,7 @@ const FileValidator = require('../../../helper/FileValidator')
 
 module.exports = {
   attributes: {
-    parentId: {
+    parent_id: {
       type: 'integer',
       required: false,
     },

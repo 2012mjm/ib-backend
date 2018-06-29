@@ -43,7 +43,7 @@ const self = module.exports = {
         nameFa: attr.name_fa,
         nameEn: attr.name_en || null,
         photoId: attr.photoId || null,
-        parentId: attr.parentId || null,
+        parentId: attr.parent_id || null,
         color: attr.color || null
       }).exec((err, model) => {
         if (err) {

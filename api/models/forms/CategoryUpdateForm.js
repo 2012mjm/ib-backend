@@ -6,7 +6,7 @@ module.exports = {
       type: 'integer',
       required: true,
     },
-    parentId: {
+    parent_id: {
       type: 'integer',
       required: false,
     },
