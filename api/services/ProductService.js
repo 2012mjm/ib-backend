@@ -59,7 +59,7 @@ const self = module.exports = {
         dataQuery.push(criteria[key])
       })
 
-      if(where) {
+      if(where.length > 0) {
         query += ` WHERE ${where.join(' AND ')}`
       }
       if(sort) {
