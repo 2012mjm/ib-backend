@@ -136,6 +136,7 @@ const self = module.exports = {
           if(row.pId === null && row.pId2 === null) {
             list[row.id] = {
               id: row.id,
+              parent_id: row.parentId,
               name: {
                 fa: row.nameFa,
                 en: row.nameEn,
@@ -149,6 +150,7 @@ const self = module.exports = {
 
             list[row.pId].child[row.id] = {
               id: row.id,
+              parent_id: row.parentId,
               name: {
                 fa: row.nameFa,
                 en: row.nameEn,
@@ -161,6 +163,7 @@ const self = module.exports = {
 
             list[row.pId2].child[row.pId].child[row.id] = {
               id: row.id,
+              parent_id: row.parentId,
               name: {
                 fa: row.nameFa,
                 en: row.nameEn,
