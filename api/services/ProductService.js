@@ -42,8 +42,8 @@ const self = module.exports = {
       let query = 'SELECT p.id, p.storeId, p.categoryId, p.price, p.discount, p.quantity, p.star, p.status, p.rejectReason, p.createdAt, p.updatedAt, \
         p.nameFa `title.fa`, p.nameEn `title.en`, \
         phf.id `images.id`, phf.path `images.path`, phf.name `images.name`, \
-        c.nameFa `category.nameFa`, c.nameEn `category.nameEn`, \
-        s.nameFa `store.nameFa`, s.nameEn `store.nameEn` \
+        c.nameFa `category.fa`, c.nameEn `category.en`, \
+        s.nameFa `store.fa`, s.nameEn `store.en` \
       FROM `product` `p` \
         LEFT JOIN `product_photo` `ph` ON ph.productId = p.id \
           LEFT JOIN `file` `phf` ON phf.id = ph.fileId \
