@@ -60,6 +60,7 @@ module.exports.routes = {
   'DELETE /api/v1/category':        'Category.delete',
 
   'POST /api/v1/product':           'Product.add',
+  'POST /api/v1/product/photo':     'Product.addPhoto',
   'GET /api/v1/product':            'Product.list',
   'GET /api/v1/product/list-panel': 'Product.listPanel',
 };

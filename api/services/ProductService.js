@@ -122,6 +122,38 @@ const self = module.exports = {
         resolve({messages: ['محصولات دسته‌های مورد نظر با موفقیت حذف شدند.']})
       })
     })
-  }
+  },
+
+  permissionStoreForProduct: (productId, storeId) => {
+    return new Promise((resolve, reject) => {
+      if(!storeId) return resolve()
+
+      Product.find().where({id: productId, storeId}).exec((err, rows) => {
+        if(err || rows.length === 0) return reject('شما دسترسی به این محصول ندارید.')
+        return resolve()
+      })
+    })
+  },
+
+  addPhoto: (attr) => {
+    return new Promise((resolve, reject) =>
+    {
+      self.permissionStoreForProduct(attr.product_id, attr.store_id).then(() => {
+        FileService.addPhoto(attr.photo).then(file => {
+          ProductPhoto.create({
+            productId: attr.product_id,
+            fileId: file.id,
+          }).exec((err, model) => {
+            if (err) return reject('خطایی رخ داده است، دوباره تلاش کنید.')
+            resolve({messages: ['تصویر جدید محصول با موفقیت افزوده شد.'], id: model.id})
+          })
+        }, () => {
+          return reject('خطایی رخ داده است، دوباره تلاش کنید.')
+        })
+      }, err => {
+        reject(err)
+      })
+    })
+  },
 }
 
