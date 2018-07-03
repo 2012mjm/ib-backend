@@ -39,19 +39,12 @@ const self = module.exports = {
   list: (criteria, page, count, sort) => {
     return new Promise((resolve, reject) =>
     {
-      let query = 'SELECT p.id, p.storeId, p.categoryId, p.price, p.discount, p.quantity, p.star, p.status, p.rejectReason, p.createdAt, p.updatedAt, \
-        p.nameFa `title.fa`, p.nameEn `title.en`, \
-        phf.id `images.id`, phf.path `images.path`, phf.name `images.name`, \
-        c.nameFa `category.fa`, c.nameEn `category.en`, \
-        s.nameFa `store.fa`, s.nameEn `store.en` \
-      FROM `product` `p` \
-        LEFT JOIN `product_photo` `ph` ON ph.productId = p.id \
-          LEFT JOIN `file` `phf` ON phf.id = ph.fileId \
-        LEFT JOIN `category` `c` ON c.id = p.categoryId \
-        LEFT JOIN `store` `s` ON s.id = p.storeId'
+      let query = 'SELECT id, storeId, categoryId, price, discount, quantity, star, status, rejectReason, createdAt, updatedAt, \
+        nameFa `title.fa`, nameEn `title.en` \
+        FROM `product`'
 
-      dataQuery = []
-      where = []
+      let dataQuery = []
+      let where = []
 
       Object.keys(criteria).forEach(key => {
         if(criteria[key] === null) return delete criteria[key]
@@ -74,6 +67,16 @@ const self = module.exports = {
         query += ` OFFSET ?`
         dataQuery.push((page-1)*count)
       }
+
+      query = 'SELECT p.*, \
+        phf.id `images.id`, phf.path `images.path`, phf.name `images.name`, \
+        c.nameFa `category.fa`, c.nameEn `category.en`, \
+        s.nameFa `store.fa`, s.nameEn `store.en` \
+      FROM ('+query+') p \
+        LEFT JOIN `product_photo` `ph` ON ph.productId = p.id \
+          LEFT JOIN `file` `phf` ON phf.id = ph.fileId \
+        LEFT JOIN `category` `c` ON c.id = p.categoryId \
+        LEFT JOIN `store` `s` ON s.id = p.storeId'
 
       Category.query(query, dataQuery, (err, rows) => {
         if (err || rows.length === 0) return reject('موردی یافت نشد.')
