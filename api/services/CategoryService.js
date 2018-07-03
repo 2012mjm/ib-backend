@@ -67,7 +67,7 @@ const self = module.exports = {
       if(attr.name_fa)    newAttr.nameFa = attr.name_fa
       if(attr.name_en)    newAttr.nameEn = attr.name_en
       if(attr.photoId)    newAttr.photoId = attr.photoId
-      if(attr.parentId)   newAttr.parentId = attr.parentId
+      if(attr.parent_id)  newAttr.parentId = attr.parent_id
       if(attr.color)      newAttr.color = attr.color
 
       Category.update({id: id}, newAttr).exec((err, model) => {
