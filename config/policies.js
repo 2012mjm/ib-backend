@@ -69,4 +69,9 @@ module.exports.policies = {
     'ProductController': {
       'list': true,
     },
+
+    'CustomerController': {
+      'login': true,
+      'verifyCode': true
+    },
 };

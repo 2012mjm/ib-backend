@@ -45,7 +45,7 @@ module.exports = {
   },
 
   validationMessages: {
-    file: {
+    photo: {
       // photoRequired: 'this is required',
       photoType: 'file type alowed is jpg, gif and png',
       photoSize: 'size largest 50MB',

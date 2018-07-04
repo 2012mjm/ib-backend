@@ -19,10 +19,11 @@ const self = module.exports = {
         price: attr.price,
         discount: attr.discount || null,
         quantity: attr.quantity || 0,
-        weight: attr.weight,
+        weight: attr.weight || null,
         status: attr.status || 'pending',
         createdAt: moment().format('YYYY-MM-DD HH:mm:ss'),
       }).exec((err, model) => {
+
         if (err) {
           return reject('خطایی رخ داده است، دوباره تلاش کنید.')
         }
@@ -55,10 +56,6 @@ const self = module.exports = {
       if(where.length > 0) {
         query += ` WHERE ${where.join(' AND ')}`
       }
-      if(sort) {
-        query += ` ORDER BY ?`
-        dataQuery.push(sort)
-      }
       if(count) {
         query += ` LIMIT ?`
         dataQuery.push(parseInt(count, 10))
@@ -78,6 +75,11 @@ const self = module.exports = {
         LEFT JOIN `category` `c` ON c.id = p.categoryId \
         LEFT JOIN `store` `s` ON s.id = p.storeId'
 
+      if(sort) {
+        query += ` ORDER BY ?`
+        dataQuery.push(sort)
+      }
+      
       Category.query(query, dataQuery, (err, rows) => {
         if (err || rows.length === 0) return reject('موردی یافت نشد.')
 

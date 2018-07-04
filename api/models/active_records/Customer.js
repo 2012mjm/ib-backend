@@ -13,6 +13,7 @@ module.exports = {
     mobile: {
       type: 'string',
       required: true,
+      unique: true,
       size: 45
     },
     password: {

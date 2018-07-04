@@ -63,4 +63,9 @@ module.exports.routes = {
   'POST /api/v1/product/photo':     'Product.addPhoto',
   'GET /api/v1/product':            'Product.list',
   'GET /api/v1/product/list-panel': 'Product.listPanel',
+
+  'POST /api/v1/customer':              'Customer.add',
+  'POST /api/v1/customer/login':        'Customer.login',
+  'POST /api/v1/customer/verify-code':  'Customer.verifyCode',
+  'GET /api/v1/customer/list-panel':    'Customer.listPanel',
 };
