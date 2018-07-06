@@ -46,28 +46,30 @@ module.exports.routes = {
   *                                                                          *
   ***************************************************************************/
 
-  'POST /api/v1/manager/signup':    'Manager.signup',
-  'POST /api/v1/manager/login':     'Manager.login',
+  'POST /api/v1/manager/signup':        'Manager.signup',
+  'POST /api/v1/manager/login':         'Manager.login',
   
-  'POST /api/v1/store/signup':      'Store.signup',
-  'POST /api/v1/store/login':       'Store.login',
-  'GET /api/v1/store':              'Store.list',
-  'GET /api/v1/store/list-panel':   'Store.listPanel',
+  'POST /api/v1/store/signup':          'Store.signup',
+  'POST /api/v1/store/login':           'Store.login',
+  'GET /api/v1/store':                  'Store.list',
+  'GET /api/v1/store/list-panel':       'Store.listPanel',
 
-  'POST /api/v1/category':          'Category.add',
-  'GET /api/v1/category':           'Category.list',
-  'PUT /api/v1/category':           'Category.edit',
-  'DELETE /api/v1/category':        'Category.delete',
+  'POST /api/v1/category':              'Category.add',
+  'GET /api/v1/category':               'Category.list',
+  'PUT /api/v1/category':               'Category.edit',
+  'DELETE /api/v1/category':            'Category.delete',
 
-  'POST /api/v1/product':           'Product.add',
-  'POST /api/v1/product/photo':     'Product.addPhoto',
-  'GET /api/v1/product':            'Product.list',
-  'GET /api/v1/product/list-panel': 'Product.listPanel',
+  'POST /api/v1/product':               'Product.add',
+  'POST /api/v1/product/photo':         'Product.addPhoto',
+  'GET /api/v1/product':                'Product.list',
+  'GET /api/v1/product/list-panel':     'Product.listPanel',
+  'GET /api/v1/product/info':           'Product.info',
+  'GET /api/v1/product/info-panel':     'Product.infoPanel',
 
   'POST /api/v1/customer':              'Customer.add',
   'POST /api/v1/customer/login':        'Customer.login',
   'POST /api/v1/customer/verify-code':  'Customer.verifyCode',
   'GET /api/v1/customer/list-panel':    'Customer.listPanel',
 
-  'POST /api/v1/order':              'Order.add',
+  'POST /api/v1/order':                 'Order.add',
 };

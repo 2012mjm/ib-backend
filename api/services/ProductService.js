@@ -40,7 +40,7 @@ const self = module.exports = {
   list: (criteria, page, count, sort) => {
     return new Promise((resolve, reject) =>
     {
-      let query = 'SELECT id, storeId, categoryId, price, discount, quantity, star, status, rejectReason, createdAt, updatedAt, \
+      let query = 'SELECT id, storeId store_id, categoryId category_id, price, discount, quantity, star, status, rejectReason, createdAt, updatedAt, \
         nameFa `title.fa`, nameEn `title.en` \
         FROM `product`'
 
@@ -72,19 +72,26 @@ const self = module.exports = {
       FROM ('+query+') p \
         LEFT JOIN `product_photo` `ph` ON ph.productId = p.id \
           LEFT JOIN `file` `phf` ON phf.id = ph.fileId \
-        LEFT JOIN `category` `c` ON c.id = p.categoryId \
-        LEFT JOIN `store` `s` ON s.id = p.storeId'
+        LEFT JOIN `category` `c` ON c.id = p.category_id \
+        LEFT JOIN `store` `s` ON s.id = p.store_id'
 
       if(sort) {
         query += ` ORDER BY ?`
         dataQuery.push(sort)
       }
       
-      Category.query(query, dataQuery, (err, rows) => {
+      Product.query(query, dataQuery, (err, rows) => {
         if (err || rows.length === 0) return reject('موردی یافت نشد.')
 
         list = ModelHelper.ORM(rows)
-        resolve(list)
+
+        finalList = []
+        list.forEach(item => {
+          item.image = (item.images.length > 0) ? item.images[0] : []
+          delete item.images
+          finalList.push(item)
+        })
+        resolve(finalList)
       })
     })
   },
@@ -169,6 +176,72 @@ const self = module.exports = {
         resolve(model)
       })
     })
-  }
+  },
+
+  info: (criteria) => {
+    return new Promise((resolve, reject) =>
+    {
+      let query = 'SELECT id, storeId store_id, categoryId category_id, price, discount, quantity, star, weight, status, rejectReason, createdAt, updatedAt, \
+        nameFa `title.fa`, nameEn `title.en`, \
+        descriptionFa `description.fa`, descriptionEn `description.en` \
+        FROM `product`'
+
+      let dataQuery = []
+      let where = []
+
+      Object.keys(criteria).forEach(key => {
+        if(criteria[key] === null) return delete criteria[key]
+        where.push(`${key} = ?`)
+        dataQuery.push(criteria[key])
+      })
+
+      if(where.length > 0) {
+        query += ` WHERE ${where.join(' AND ')}`
+      }
+
+      query = 'SELECT p.*, \
+        phf.id `images.id`, phf.path `images.path`, phf.name `images.name`, \
+        c.nameFa `category.fa`, c.nameEn `category.en`, \
+        s.nameFa `store.fa`, s.nameEn `store.en` \
+      FROM ('+query+') p \
+        LEFT JOIN `product_photo` `ph` ON ph.productId = p.id \
+          LEFT JOIN `file` `phf` ON phf.id = ph.fileId \
+        LEFT JOIN `category` `c` ON c.id = p.category_id \
+        LEFT JOIN `store` `s` ON s.id = p.store_id'
+
+      Product.query(query, dataQuery, (err, rows) => {
+        if (err || rows.length === 0) return reject('موردی یافت نشد.')
+
+        list = ModelHelper.ORM(rows)
+
+        resolve(list[0])
+      })
+    })
+  },
+
+  infoByManager: (id) => {
+    return new Promise((resolve, reject) =>
+    {
+      self.info({id}).then(resolve, reject)
+    })
+  },
+
+  infoByStore: (id, storeId) => {
+    return new Promise((resolve, reject) =>
+    {
+      self.info({id, storeId}).then(resolve, reject)
+    })
+  },
+
+  infoOne: (id) => {
+    return new Promise((resolve, reject) =>
+    {
+      self.info({id, status: 'accepted'}).then(item => {
+        delete item.status
+        delete item.rejectReason
+        resolve(item)
+      }, reject)
+    })
+  },
 }
 

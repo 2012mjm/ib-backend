@@ -68,6 +68,7 @@ module.exports.policies = {
 
     'ProductController': {
       'list': true,
+      'info': true,
     },
 
     'CustomerController': {

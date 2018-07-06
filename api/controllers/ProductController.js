@@ -74,6 +74,9 @@ module.exports = {
 				return res.json(422, ErrorService.filter(err))
 			})
 		}
+		else {
+			return res.json(422, ErrorService.filter('شما دسترسی انجام این عمل را ندارید.'))
+		}
 	},
 
 	list: (req, res) => {
@@ -86,6 +89,34 @@ module.exports = {
 			req.param('count', 10),
 			req.param('sort', 'createdAt DESC')
 		).then(result => {
+			return res.json(200, result)
+		}, (err) => {
+			return res.json(422, ErrorService.filter(err))
+		})
+	},
+
+	infoPanel: (req, res) => {
+		if(req.token.role === 'manager') {
+			ProductService.infoByManager(req.param('id', null)).then(result => {
+				return res.json(200, result)
+			}, (err) => {
+				return res.json(422, ErrorService.filter(err))
+			})
+		}
+		else if(req.token.role === 'store') {
+			ProductService.infoByStore(req.param('id', null), req.token.storeId).then(result => {
+				return res.json(200, result)
+			}, (err) => {
+				return res.json(422, ErrorService.filter(err))
+			})
+		}
+		else {
+			return res.json(422, ErrorService.filter('شما دسترسی انجام این عمل را ندارید.'))
+		}
+	},
+
+	info: (req, res) => {
+		ProductService.infoOne(req.param('id', null)).then(result => {
 			return res.json(200, result)
 		}, (err) => {
 			return res.json(422, ErrorService.filter(err))
