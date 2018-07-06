@@ -143,5 +143,17 @@ module.exports = {
 			})
 		})
 	},
+
+	delete: (req, res) => {
+		if(['manager', 'store'].indexOf(req.token.role) === -1) {
+			return res.json(422, ErrorService.filter('شما دسترسی انجام این عمل را ندارید.'))
+		}
+
+		ProductService.delete(parseInt(req.param('id'), 10), req.token.storeId).then(result => {
+			return res.json(200, result)
+		}, (err) => {
+			return res.json(422, ErrorService.filter(err))
+		})
+	},
 }
 

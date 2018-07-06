@@ -66,6 +66,7 @@ module.exports.routes = {
   'GET /api/v1/product/info':           'Product.info',
   'GET /api/v1/product/info-panel':     'Product.infoPanel',
   'PUT /api/v1/product':                'Product.edit',
+  'DELETE /api/v1/product':             'Product.delete',
 
   'POST /api/v1/customer':              'Customer.add',
   'POST /api/v1/customer/login':        'Customer.login',

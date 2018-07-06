@@ -286,5 +286,33 @@ const self = module.exports = {
       })
     })
   },
+
+  delete: (id, storeId=null) => {
+    return new Promise((resolve, reject) =>
+    {
+      if(storeId) {
+        self.permissionStoreForProduct(id, storeId).then(product => {
+          self.deleteById(id).then(resolve, reject)
+        }, err => {
+          return reject(err)
+        })
+      }
+      else {
+        self.deleteById(id).then(resolve, reject)
+      }
+    })
+  },
+  
+  deleteById: (id) => {
+    return new Promise((resolve, reject) =>
+    {
+      ProductPhotoService.deleteForceByProductId(id).then(() => {
+        Product.destroy({id}).exec(err => {
+          if(err) return reject('مشکلی پیش آمده است.')
+          resolve({messages: ['محصول مورد نظر با موفقیت حذف شد.']})
+        })
+      })
+    })
+  }
 }
 
