@@ -21,7 +21,8 @@ module.exports = {
       type: 'string',
       required: false,
       size: 45,
-      defaultsTo: null
+      defaultsTo: null,
+      unique: true,
     },
     cityId: {
       type: 'integer',
@@ -56,7 +57,7 @@ module.exports = {
     status: {
       type: 'string',
       required: true,
-      enum: ['pending', 'accepted', 'rejected']
+      enum: ['draft','pending','accepted','rejected']
     },
     reasonRejected: {
       type: 'text',

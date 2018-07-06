@@ -160,5 +160,15 @@ const self = module.exports = {
       })
     })
   },
+
+  findById: (id) => {
+    return new Promise((resolve, reject) =>
+    {
+      Product.findOne({id}).exec((err, model) => {
+        if (err || !model) return reject('محصول مورد نظر یافت نشد.')
+        resolve(model)
+      })
+    })
+  }
 }
 

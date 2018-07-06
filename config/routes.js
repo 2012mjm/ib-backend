@@ -68,4 +68,6 @@ module.exports.routes = {
   'POST /api/v1/customer/login':        'Customer.login',
   'POST /api/v1/customer/verify-code':  'Customer.verifyCode',
   'GET /api/v1/customer/list-panel':    'Customer.listPanel',
+
+  'POST /api/v1/order':              'Order.add',
 };
