@@ -10,7 +10,7 @@ module.exports = {
 			delete req.body.status
 		}
 
-		ProductForm.validate(req.body, (err) => {
+		ProductCreateForm.validate(req.body, (err) => {
 			if (err) return res.json(422, ErrorService.filter(err))
 
 			ProductService.add(req.body).then(result => {
@@ -121,6 +121,27 @@ module.exports = {
 		}, (err) => {
 			return res.json(422, ErrorService.filter(err))
 		})
-	}
+	},
+
+	edit: (req, res) => {
+		if(['manager', 'store'].indexOf(req.token.role) === -1) {
+			return res.json(422, ErrorService.filter('شما دسترسی انجام این عمل را ندارید.'))
+		}
+
+		if(req.token.role === 'store') {
+			req.body.store_id 	= req.token.storeId
+			req.body.status 	= 'pending'
+		}
+
+		ProductUpdateForm.validate(req.body, (err) => {
+			if (err) return res.json(422, ErrorService.filter(err))
+
+			ProductService.edit(parseInt(req.body.id, 10), req.body, req.token.role).then(result => {
+				return res.json(200, result)
+			}, (err) => {
+				return res.json(422, ErrorService.filter(err))
+			})
+		})
+	},
 }
 

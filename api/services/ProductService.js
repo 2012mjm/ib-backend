@@ -142,7 +142,7 @@ const self = module.exports = {
 
       Product.find().where({id: productId, storeId}).exec((err, rows) => {
         if(err || rows.length === 0) return reject('شما دسترسی به این محصول ندارید.')
-        return resolve()
+        return resolve(rows[0])
       })
     })
   },
@@ -241,6 +241,49 @@ const self = module.exports = {
         delete item.rejectReason
         resolve(item)
       }, reject)
+    })
+  },
+
+  edit: (id, attr, role) => {
+    return new Promise((resolve, reject) =>
+    {
+      if(role === 'store') {
+        self.permissionStoreForProduct(id, attr.store_id).then(product => {
+          self.update(id, attr).then(resolve, reject)
+        }, err => {
+          return reject(err)
+        })
+      }
+      else {
+        self.update(id, attr).then(resolve, reject)
+      }
+    })
+  },
+
+  update: (id, attr) => {
+    return new Promise((resolve, reject) =>
+    {
+      let newAttr = {}
+
+      if(attr.store_id)       newAttr.storeId = attr.store_id
+      if(attr.category_id)    newAttr.categoryId = attr.category_id
+      if(attr.name_fa)        newAttr.nameFa = attr.name_fa
+      if(attr.name_en)        newAttr.nameEn = attr.name_en
+      if(attr.description_fa) newAttr.descriptionFa = attr.description_fa
+      if(attr.description_en) newAttr.descriptionEn = attr.description_en
+      if(attr.price)          newAttr.price = attr.price
+      if(attr.discount)       newAttr.discount = attr.discount
+      if(attr.quantity)       newAttr.quantity = attr.quantity
+      if(attr.weight)         newAttr.weight = attr.weight
+      if(attr.status)         newAttr.status = attr.status
+      newAttr.updatedAt       = moment().format('YYYY-MM-DD HH:mm:ss'),
+
+      Product.update(id, newAttr).exec((err, model) => {
+        if (err) {
+          return reject('خطایی رخ داده است، دوباره تلاش کنید.')
+        }
+        resolve({messages: ['محصول مورد نظر با موفقیت ویرایش شد.']})
+      })
     })
   },
 }
