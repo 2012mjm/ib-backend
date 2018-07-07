@@ -21,28 +21,6 @@ module.exports = {
 		})
 	},
 
-	addPhoto: (req, res) => {
-		if(['manager', 'store'].indexOf(req.token.role) === -1) {
-			return res.json(422, ErrorService.filter('شما دسترسی انجام این عمل را ندارید.'))
-		}
-
-		req.body.photo = req.file('photo')
-
-		if(req.token.role === 'store') {
-			req.body.store_id = req.token.storeId
-		}
-
-		ProductPhotoForm.validate(req.body, (err) => {
-			if (err) return res.json(422, ErrorService.filter(err))
-
-			ProductService.addPhoto(req.body).then(result => {
-				return res.json(200, result)
-			}, (err) => {
-				return res.json(422, ErrorService.filter(err))
-			})
-		})
-	},
-
 	listPanel: (req, res) => {
 		if(req.token.role === 'manager') {
 			ProductService.listByManager({
@@ -150,6 +128,40 @@ module.exports = {
 		}
 
 		ProductService.delete(parseInt(req.param('id'), 10), req.token.storeId).then(result => {
+			return res.json(200, result)
+		}, (err) => {
+			return res.json(422, ErrorService.filter(err))
+		})
+	},
+
+	addPhoto: (req, res) => {
+		if(['manager', 'store'].indexOf(req.token.role) === -1) {
+			return res.json(422, ErrorService.filter('شما دسترسی انجام این عمل را ندارید.'))
+		}
+
+		req.body.photo = req.file('photo')
+
+		if(req.token.role === 'store') {
+			req.body.store_id = req.token.storeId
+		}
+
+		ProductPhotoForm.validate(req.body, (err) => {
+			if (err) return res.json(422, ErrorService.filter(err))
+
+			ProductService.addPhoto(req.body).then(result => {
+				return res.json(200, result)
+			}, (err) => {
+				return res.json(422, ErrorService.filter(err))
+			})
+		})
+	},
+
+	deletePhoto: (req, res) => {
+		if(['manager', 'store'].indexOf(req.token.role) === -1) {
+			return res.json(422, ErrorService.filter('شما دسترسی انجام این عمل را ندارید.'))
+		}
+
+		ProductPhotoService.deleteByAccess(parseInt(req.param('id'), 10), req.token.storeId).then(result => {
 			return res.json(200, result)
 		}, (err) => {
 			return res.json(422, ErrorService.filter(err))

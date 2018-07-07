@@ -66,7 +66,7 @@ const self = module.exports = {
       }
 
       query = 'SELECT p.*, \
-        phf.id `images.id`, phf.path `images.path`, phf.name `images.name`, \
+        ph.id `images.id`, phf.path `images.path`, phf.name `images.name`, \
         c.nameFa `category.fa`, c.nameEn `category.en`, \
         s.nameFa `store.fa`, s.nameEn `store.en` \
       FROM ('+query+') p \
@@ -99,14 +99,30 @@ const self = module.exports = {
   listByManager: (criteria, page, count, sort) => {
     return new Promise((resolve, reject) =>
     {
-      self.list(criteria, page, count, sort).then(resolve, reject)
+      self.list(criteria, page, count, sort).then(rows => 
+        resolve(rows.map(item => ({...item,
+          image: (item.image.length !== 0) ? {
+            id: item.image.id,
+            name: item.image.name,
+            path: `${sails.config.params.apiUrl}${item.image.path}${item.image.name}`
+          } : null
+        })))
+      , reject)
     })
   },
 
   listByStore: (criteria, page, count, sort) => {
     return new Promise((resolve, reject) =>
     {
-      self.list(criteria, page, count, sort).then(resolve, reject)
+      self.list(criteria, page, count, sort).then(rows => 
+        resolve(rows.map(item => ({...item,
+          image: (item.image.length !== 0) ? {
+            id: item.image.id,
+            name: item.image.name,
+            path: `${sails.config.params.apiUrl}${item.image.path}${item.image.name}`
+          } : null
+        })))
+      , reject)
     })
   },
 
@@ -117,6 +133,7 @@ const self = module.exports = {
         rows.forEach((item, index) => {
           delete rows[index].status
           delete rows[index].rejectReason
+          rows[index].image = (item.image.length !== 0) ? `${sails.config.params.apiUrl}${rows[index].image.path}${rows[index].image.name}` : null
         })
         resolve(rows)
       }, reject)
@@ -200,7 +217,7 @@ const self = module.exports = {
       }
 
       query = 'SELECT p.*, \
-        phf.id `images.id`, phf.path `images.path`, phf.name `images.name`, \
+        ph.id `images.id`, phf.path `images.path`, phf.name `images.name`, \
         c.nameFa `category.fa`, c.nameEn `category.en`, \
         s.nameFa `store.fa`, s.nameEn `store.en` \
       FROM ('+query+') p \
@@ -222,14 +239,20 @@ const self = module.exports = {
   infoByManager: (id) => {
     return new Promise((resolve, reject) =>
     {
-      self.info({id}).then(resolve, reject)
+      self.info({id}).then(item => {
+        item.images = item.images.map(image => ({id: image.id, name: image.name, path: `${sails.config.params.apiUrl}${image.path}${image.name}`}))
+        resolve(item)
+      }, reject)
     })
   },
 
   infoByStore: (id, storeId) => {
     return new Promise((resolve, reject) =>
     {
-      self.info({id, storeId}).then(resolve, reject)
+      self.info({id, storeId}).then(item => {
+        item.images = item.images.map(image => ({id: image.id, name: image.name, path: `${sails.config.params.apiUrl}${image.path}${image.name}`}))
+        resolve(item)
+      }, reject)
     })
   },
 
@@ -239,6 +262,7 @@ const self = module.exports = {
       self.info({id, status: 'accepted'}).then(item => {
         delete item.status
         delete item.rejectReason
+        item.images = item.images.map(image => `${sails.config.params.apiUrl}${image.path}${image.name}`)
         resolve(item)
       }, reject)
     })

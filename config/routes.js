@@ -60,13 +60,14 @@ module.exports.routes = {
   'DELETE /api/v1/category':            'Category.delete',
 
   'POST /api/v1/product':               'Product.add',
-  'POST /api/v1/product/photo':         'Product.addPhoto',
   'GET /api/v1/product':                'Product.list',
   'GET /api/v1/product/list-panel':     'Product.listPanel',
   'GET /api/v1/product/info':           'Product.info',
   'GET /api/v1/product/info-panel':     'Product.infoPanel',
   'PUT /api/v1/product':                'Product.edit',
   'DELETE /api/v1/product':             'Product.delete',
+  'POST /api/v1/product/photo':         'Product.addPhoto',
+  'DELETE /api/v1/product/photo':       'Product.deletePhoto',
 
   'POST /api/v1/customer':              'Customer.add',
   'POST /api/v1/customer/login':        'Customer.login',
