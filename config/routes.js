@@ -55,15 +55,15 @@ module.exports.routes = {
   'GET /api/v1/store/list-panel':       'Store.listPanel',
 
   'POST /api/v1/category':              'Category.add',
-  'GET /api/v1/category':               'Category.list',
+  'GET /api/v1/categories':             'Category.list',
   'PUT /api/v1/category':               'Category.edit',
   'DELETE /api/v1/category':            'Category.delete',
 
   'POST /api/v1/product':               'Product.add',
-  'GET /api/v1/product':                'Product.list',
-  'GET /api/v1/product/list-panel':     'Product.listPanel',
-  'GET /api/v1/product/info':           'Product.info',
-  'GET /api/v1/product/info-panel':     'Product.infoPanel',
+  'GET /api/v1/products':               'Product.list',
+  'GET /api/v1/products/panel':         'Product.listPanel',
+  'GET /api/v1/product':                'Product.info',
+  'GET /api/v1/product/panel':          'Product.infoPanel',
   'PUT /api/v1/product':                'Product.edit',
   'DELETE /api/v1/product':             'Product.delete',
   'POST /api/v1/product/photo':         'Product.addPhoto',
@@ -72,7 +72,7 @@ module.exports.routes = {
   'POST /api/v1/customer':              'Customer.add',
   'POST /api/v1/customer/login':        'Customer.login',
   'POST /api/v1/customer/verify-code':  'Customer.verifyCode',
-  'GET /api/v1/customer/list-panel':    'Customer.listPanel',
+  'GET /api/v1/customers/panel':        'Customer.listPanel',
 
   'POST /api/v1/order':                 'Order.add',
 };
