@@ -24,6 +24,11 @@ module.exports = {
       defaultsTo: null,
       unique: true,
     },
+    amount: {
+      type: 'integer',
+      required: true,
+      size: 20
+    },
     cityId: {
       type: 'integer',
       required: false,

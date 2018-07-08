@@ -17,6 +17,13 @@ module.exports = {
       size: 11,
       model: 'customer'
     },
+    storeId: {
+      type: 'integer',
+      required: true,
+      index: true,
+      size: 11,
+      model: 'store'
+    },
     invoiceId: {
       type: 'integer',
       required: true,

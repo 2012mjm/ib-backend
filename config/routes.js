@@ -51,8 +51,8 @@ module.exports.routes = {
   
   'POST /api/v1/store/signup':          'Store.signup',
   'POST /api/v1/store/login':           'Store.login',
-  'GET /api/v1/store':                  'Store.list',
-  'GET /api/v1/store/list-panel':       'Store.listPanel',
+  'GET /api/v1/stores':                 'Store.list',
+  'GET /api/v1/stores/panel':           'Store.listPanel',
 
   'POST /api/v1/category':              'Category.add',
   'GET /api/v1/categories':             'Category.list',
@@ -75,4 +75,6 @@ module.exports.routes = {
   'GET /api/v1/customers/panel':        'Customer.listPanel',
 
   'POST /api/v1/order':                 'Order.add',
+
+  'GET /api/v1/invoices':               'Invoice.list',
 };

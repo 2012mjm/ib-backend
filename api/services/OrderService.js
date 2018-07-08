@@ -17,6 +17,7 @@ const self = module.exports = {
         }
 
         let count = 0
+        let amount = 0
         for(let i=0; i<productCount; i++)
         {
           let item = attr.products[i]
@@ -24,6 +25,8 @@ const self = module.exports = {
           item.invoice_id = invoice.id
           self.create(item).then(({order, product}) =>
           {
+            amount += (product.price-product.discount)*item.quantity
+
             count++
             result.orders.push({
               id: order.id,
@@ -40,11 +43,13 @@ const self = module.exports = {
             })
 
             if(count >= productCount) {
+              InvoiceService.update(invoice.id, {amount}).then()
               resolve(Object.assign({messages: ['سفارشات شما ثبت شد.']}, result))
             }
           }, err => {
             count++
             if(count >= productCount && result.orders.length > 0) {
+              InvoiceService.update(invoice.id, {amount}).then()
               resolve(Object.assign({messages: ['سفارشات شما ثبت شد.']}, result))
             } else {
               reject('مشکلی پیش آمده است دوباره تلاش کنید.')
@@ -62,6 +67,7 @@ const self = module.exports = {
     {
       ProductService.findById(attr.id).then(product => {
         Order.create({
+          storeId: product.storeId,
           customerId: attr.customer_id,
           invoiceId: attr.invoice_id,
           productId: attr.id,
