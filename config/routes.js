@@ -53,6 +53,11 @@ module.exports.routes = {
   'POST /api/v1/store/login':           'Store.login',
   'GET /api/v1/stores':                 'Store.list',
   'GET /api/v1/stores/panel':           'Store.listPanel',
+  'GET /api/v1/store':                  'Store.info',
+  'GET /api/v1/store/panel':            'Store.infoPanel',
+  'PUT /api/v1/store':                  'Store.edit',
+  'DELETE /api/v1/store':               'Store.delete',
+  'DELETE /api/v1/store/force':         'Store.deleteForce',
 
   'POST /api/v1/category':              'Category.add',
   'GET /api/v1/categories':             'Category.list',
@@ -66,6 +71,7 @@ module.exports.routes = {
   'GET /api/v1/product/panel':          'Product.infoPanel',
   'PUT /api/v1/product':                'Product.edit',
   'DELETE /api/v1/product':             'Product.delete',
+  'DELETE /api/v1/product/force':       'Product.deleteForce',
   'POST /api/v1/product/photo':         'Product.addPhoto',
   'DELETE /api/v1/product/photo':       'Product.deletePhoto',
 

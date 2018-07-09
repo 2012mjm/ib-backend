@@ -109,6 +109,7 @@ module.exports = {
 		if(req.token.role === 'store') {
 			req.body.store_id 	= req.token.storeId
 			req.body.status 	= 'pending'
+			delete req.body.reasonRejected
 		}
 
 		ProductUpdateForm.validate(req.body, (err) => {
@@ -128,6 +129,18 @@ module.exports = {
 		}
 
 		ProductService.delete(parseInt(req.param('id'), 10), req.token.storeId).then(result => {
+			return res.json(200, result)
+		}, (err) => {
+			return res.json(422, ErrorService.filter(err))
+		})
+	},
+
+	deleteForce: (req, res) => {
+		if(['manager'].indexOf(req.token.role) === -1) {
+			return res.json(422, ErrorService.filter('شما دسترسی انجام این عمل را ندارید.'))
+		}
+
+		ProductService.deleteForce(parseInt(req.param('id'), 10)).then(result => {
 			return res.json(200, result)
 		}, (err) => {
 			return res.json(422, ErrorService.filter(err))

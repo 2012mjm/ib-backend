@@ -40,7 +40,7 @@ const self = module.exports = {
   list: (criteria, page, count, sort) => {
     return new Promise((resolve, reject) =>
     {
-      let query = 'SELECT id, storeId store_id, categoryId category_id, price, discount, quantity, star, status, rejectReason, createdAt, updatedAt, \
+      let query = 'SELECT id, storeId store_id, categoryId category_id, price, discount, quantity, star, status, reasonRejected, createdAt, updatedAt, \
         nameFa `title.fa`, nameEn `title.en` \
         FROM `product`'
 
@@ -132,7 +132,7 @@ const self = module.exports = {
       self.list(criteria, page, count, sort).then(rows => {
         rows.forEach((item, index) => {
           delete rows[index].status
-          delete rows[index].rejectReason
+          delete rows[index].reasonRejected
           rows[index].image = (item.image.length !== 0) ? `${sails.config.params.apiUrl}${rows[index].image.path}${rows[index].image.name}` : null
         })
         resolve(rows)
@@ -198,7 +198,7 @@ const self = module.exports = {
   info: (criteria) => {
     return new Promise((resolve, reject) =>
     {
-      let query = 'SELECT id, storeId store_id, categoryId category_id, price, discount, quantity, star, weight, status, rejectReason, createdAt, updatedAt, \
+      let query = 'SELECT id, storeId store_id, categoryId category_id, price, discount, quantity, star, weight, status, reasonRejected, createdAt, updatedAt, \
         nameFa `title.fa`, nameEn `title.en`, \
         descriptionFa `description.fa`, descriptionEn `description.en` \
         FROM `product`'
@@ -208,7 +208,13 @@ const self = module.exports = {
 
       Object.keys(criteria).forEach(key => {
         if(criteria[key] === null) return delete criteria[key]
-        where.push(`${key} = ?`)
+
+        let opt = '='
+        if(typeof criteria[key] === 'object') {
+          opt = Object.keys(criteria[key])[0]
+          criteria[key] = criteria[key][Object.keys(criteria[key])[0]]
+        }
+        where.push(`${key} ${opt} ?`)
         dataQuery.push(criteria[key])
       })
 
@@ -230,7 +236,6 @@ const self = module.exports = {
         if (err || rows.length === 0) return reject('موردی یافت نشد.')
 
         list = ModelHelper.ORM(rows)
-
         resolve(list[0])
       })
     })
@@ -249,7 +254,7 @@ const self = module.exports = {
   infoByStore: (id, storeId) => {
     return new Promise((resolve, reject) =>
     {
-      self.info({id, storeId}).then(item => {
+      self.info({id, storeId, status: {'!=':'deleted'}}).then(item => {
         item.images = item.images.map(image => ({id: image.id, name: image.name, path: `${sails.config.params.apiUrl}${image.path}${image.name}`}))
         resolve(item)
       }, reject)
@@ -261,7 +266,7 @@ const self = module.exports = {
     {
       self.info({id, status: 'accepted'}).then(item => {
         delete item.status
-        delete item.rejectReason
+        delete item.reasonRejected
         item.images = item.images.map(image => `${sails.config.params.apiUrl}${image.path}${image.name}`)
         resolve(item)
       }, reject)
@@ -300,6 +305,7 @@ const self = module.exports = {
       if(attr.quantity)       newAttr.quantity = attr.quantity
       if(attr.weight)         newAttr.weight = attr.weight
       if(attr.status)         newAttr.status = attr.status
+      if(attr.reasonRejected) newAttr.reasonRejected = attr.reasonRejected
       newAttr.updatedAt       = moment().format('YYYY-MM-DD HH:mm:ss'),
 
       Product.update(id, newAttr).exec((err, model) => {
@@ -311,7 +317,19 @@ const self = module.exports = {
     })
   },
 
-  delete: (id, storeId=null) => {
+  delete: (id) => {
+    return new Promise((resolve, reject) =>
+    {
+      Product.update(id, {status: 'deleted'}).exec((err, model) => {
+        if (err) {
+          return reject('خطایی رخ داده است، دوباره تلاش کنید.')
+        }
+        resolve({messages: ['محصول مورد نظر با موفقیت به حالت حذف شده درآمد.']})
+      })
+    })
+  },
+
+  deleteForce: (id, storeId=null) => {
     return new Promise((resolve, reject) =>
     {
       if(storeId) {

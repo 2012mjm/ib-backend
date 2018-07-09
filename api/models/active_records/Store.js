@@ -69,6 +69,12 @@ module.exports = {
       defaultsTo: null,
       model: 'file'
     },
+    status: {
+      type: 'string',
+      required: true,
+      enum: ['active', 'inactive', 'deleted'],
+      defaultsTo: 'active'
+    },
     createdAt: {
       type: 'datetime',
       required: true

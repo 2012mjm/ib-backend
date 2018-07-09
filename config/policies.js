@@ -59,7 +59,8 @@ module.exports.policies = {
     'StoreController': {
       'login': true, // We dont need authorization here, allowing public access
       'signup': true,
-      'list': true
+      'list': true,
+      'info': true
     },
 
     'CategoryController': {
@@ -68,7 +69,7 @@ module.exports.policies = {
 
     'ProductController': {
       'list': true,
-      'info': true,
+      'info': true
     },
 
     'CustomerController': {
