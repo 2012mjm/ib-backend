@@ -104,6 +104,14 @@ const self = module.exports = {
               fa: row.ownerFa,
               en: row.ownerEn,
             },
+            description: {
+              fa: 'دیجی‌کالا مرجع تخصصی نقد و بررسی و فروش اینترنتی کالا در ایران است. گروه‏‏‌های مختلف کالا مانند کالای دیجیتال، لوازم خانگی، لوازم شخصی، فرهنگ و هنر و ورزش و سرگرمی با تنوعی بی‌نظیر در دیجی‌کالا عرضه می‏‏‏‌شوند...',
+              en: null,
+            },
+            slogan: {
+              fa: 'بررسی، انتخاب و خرید آنلاین',
+              en: null,
+            },
             logo: (row.logoId) ? `${sails.config.params.apiUrl}${row.logoId.path}${row.logoId.name}` : null,
             createdAt: row.createdAt
           })
