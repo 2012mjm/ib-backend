@@ -1,3 +1,5 @@
+const ModelHelper = require('../../helper/ModelHelper')
+
 os = require('os')
 os.tmpDir = os.tmpdir
 const moment = require('moment')
@@ -119,86 +121,59 @@ const self = module.exports = {
   list: () => {
     return new Promise((resolve, reject) =>
     {
-      const query = 'SELECT c.*, file.path photoPath, file.name photoName, \
-                      c2.id pId, c2.nameFa pNameFa, \
-                      c3.id pId2, c3.nameFa pNameFa2 \
-                      FROM `category` `c` \
-                      LEFT JOIN `category` `c2` ON c2.id = c.parentId \
-                      LEFT JOIN `category` `c3` ON c3.id = c2.parentId \
-                      LEFT JOIN `file` ON file.id = c.photoId \
-                      ORDER BY c.parentId ASC, c.id ASC'
-                      
+      // `${sails.config.params.apiUrl}${row.photoPath}${row.photoName}`
+
+
+
+      const query = 'SELECT c.id, c.parentId `parent_id`, c.nameFa `name.fa`, c.nameEn `name.en`, c.color, CONCAT("'+sails.config.params.apiUrl+'", f.path, f.name) image, \
+        c2.id `[child].id`, c2.parentId `[child].parent_id`, c2.nameFa `[child].name.fa`, c2.nameEn `[child].name.en`, c2.color `[child].color`, CONCAT("'+sails.config.params.apiUrl+'", f2.path, f2.name) `[child].image`, \
+        c3.id `[child].[child].id`, c3.parentId `[child].[child].parent_id`, c3.nameFa `[child].[child].name.fa`, c3.nameEn `[child].[child].name.en`, c3.color `[child].[child].color`, CONCAT("'+sails.config.params.apiUrl+'", f3.path, f3.name) `[child].[child].image` \
+        FROM category c \
+          LEFT JOIN `file` f ON f.id = c.photoId \
+          LEFT JOIN category c2 ON c2.parentId = c.id \
+            LEFT JOIN `file` f2 ON f2.id = c2.photoId \
+            LEFT JOIN category c3 ON c3.parentId = c2.id \
+              LEFT JOIN `file` f3 ON f3.id = c3.photoId \
+        WHERE c.parentId IS NULL \
+        ORDER BY c.parentId ASC, c.id ASC, c2.id ASC, c3.id ASC'
+
       Category.query(query, (err, rows) => {
         if (err || rows.length === 0) return reject('موردی یافت نشد.')
 
-        let list = []
-        rows.forEach(row => {
-          if(row.pId === null && row.pId2 === null) {
-            list[row.id] = {
-              id: row.id,
-              parent_id: row.parentId,
-              name: {
-                fa: row.nameFa,
-                en: row.nameEn,
-              },
-              color: row.color,
-              photo: (row.photoId) ? `${sails.config.params.apiUrl}${row.photoPath}${row.photoName}` : null
-            }
-          }
-          else if(row.pId2 === null) {
-            if(list[row.pId].child === undefined) list[row.pId].child = []
+        list = ModelHelper.ORM(rows)
+        resolve(list)
+      })
+    })
+  },
 
-            list[row.pId].child[row.id] = {
-              id: row.id,
-              parent_id: row.parentId,
-              name: {
-                fa: row.nameFa,
-                en: row.nameEn,
-              },
-              photo: (row.photoId) ? `${sails.config.params.apiUrl}${row.photoPath}${row.photoName}` : null
-            }
-          }
-          else {
-            if(list[row.pId2].child[row.pId].child === undefined) list[row.pId2].child[row.pId].child = []
+  listByManagerAndStore: () => {
+    return new Promise((resolve, reject) =>
+    {
+      const query = 'SELECT c.id, c.parentId `parent_id`, c.nameFa `name.fa`, c.nameEn `name.en`, c.color, f.path `photo.path`, f.name `photo.name`, \
+        a.id `[product_attributes].id`, a.key `[product_attributes].key`, a.titleFa `[product_attributes].title.fa`, a.titleEn `[product_attributes].title.en`, ca.isMultiple `[product_attributes].is_multiple`, ca.isRequired `[product_attributes].is_required`, \
+        c2.id `[child].id`, c2.parentId `[child].parent_id`, c2.nameFa `[child].name.fa`, c2.nameEn `[child].name.en`, c2.color `[child].color`, f2.path `[child].photo.path`, f2.name `[child].photo.name`, \
+        a2.id `[child].[product_attributes].id`, a2.key `[child].[product_attributes].key`, a2.titleFa `[child].[product_attributes].title.fa`, a2.titleEn `[child].[product_attributes].title.en`, ca2.isMultiple `[child].[product_attributes].is_multiple`, ca2.isRequired `[child].[product_attributes].is_required`, \
+        c3.id `[child].[child].id`, c3.parentId `[child].[child].parent_id`, c3.nameFa `[child].[child].name.fa`, c3.nameEn `[child].[child].name.en`, c3.color `[child].[child].color`, f3.path `[child].[child].photo.path`, f3.name `[child].[child].photo.name`, \
+        a3.id `[child].[child].[product_attributes].id`, a3.key `[child].[child].[product_attributes].key`, a3.titleFa `[child].[child].[product_attributes].title.fa`, a3.titleEn `[child].[child].[product_attributes].title.en`, ca3.isMultiple `[child].[child].[product_attributes].is_multiple`, ca3.isRequired `[child].[child].[product_attributes].is_required` \
+        FROM category c \
+          LEFT JOIN `file` f ON f.id = c.photoId \
+          LEFT JOIN `category_attribute` `ca` ON ca.categoryId = c.id \
+            LEFT JOIN `attribute` `a` ON a.id = ca.attributeId \
+          LEFT JOIN category c2 ON c2.parentId = c.id \
+            LEFT JOIN `file` f2 ON f2.id = c2.photoId \
+            LEFT JOIN `category_attribute` `ca2` ON ca2.categoryId = c2.id \
+              LEFT JOIN `attribute` `a2` ON a2.id = ca2.attributeId \
+            LEFT JOIN category c3 ON c3.parentId = c2.id \
+              LEFT JOIN `file` f3 ON f3.id = c3.photoId \
+              LEFT JOIN `category_attribute` `ca3` ON ca3.categoryId = c3.id \
+                LEFT JOIN `attribute` `a3` ON a3.id = ca3.attributeId \
+        WHERE c.parentId IS NULL \
+        ORDER BY c.parentId ASC, c.id ASC, c2.id ASC, c3.id ASC'
 
-            list[row.pId2].child[row.pId].child[row.id] = {
-              id: row.id,
-              parent_id: row.parentId,
-              name: {
-                fa: row.nameFa,
-                en: row.nameEn,
-              },
-            }
-          }
-        })
+      Category.query(query, (err, rows) => {
+        if (err || rows.length === 0) return reject('موردی یافت نشد.')
 
-        for (let i=0; i<list.length; i++) {
-          if (list[i] === undefined) {    
-            list.splice(i, 1)
-            i--
-            continue
-          }
-
-          if(list[i].child) {
-            for (let j=0; j<list[i].child.length; j++) {
-              if (list[i].child[j] === undefined) {
-                list[i].child.splice(j, 1)
-                j--
-                continue
-              }
-
-              if(list[i].child[j].child) {
-                for (let k=0; k<list[i].child[j].child.length; k++) {
-                  if (list[i].child[j].child[k] === undefined) {
-                    list[i].child[j].child.splice(k, 1)
-                    k--
-                  }
-                }
-              }
-            }
-          }
-        }
-
+        list = ModelHelper.ORM(rows)
         resolve(list)
       })
     })

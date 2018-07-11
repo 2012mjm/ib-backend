@@ -1,28 +1,26 @@
 /**
- * SecondSubcategory.js
+ * Attribute.js
  *
- * @description :: The SecondSubcategory table
+ * @description :: The Attribute table
  * @docs        :: http://sailsjs.org/#!documentation/models
  */
 
 module.exports = {
-  tableName: 'secondSubcategory',
+  tableName: 'attribute',
   autoCreatedAt: false,
   autoUpdatedAt: false,
   attributes: {
-    subcategoryId: {
-      type: 'integer',
-      required: true,
-      index: true,
-      size: 11,
-      model: 'subcategory'
-    },
-    nameFa: {
+    key: {
       type: 'string',
       required: true,
       size: 45
     },
-    nameEn: {
+    titleFa: {
+      type: 'string',
+      required: true,
+      size: 45
+    },
+    titleEn: {
       type: 'string',
       required: false,
       size: 45,

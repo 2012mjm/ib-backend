@@ -40,7 +40,7 @@ const self = module.exports = {
   list: (criteria, page, count, sort) => {
     return new Promise((resolve, reject) =>
     {
-      let query = 'SELECT id, storeId store_id, categoryId category_id, price, discount, quantity, star, status, reasonRejected, createdAt, updatedAt, \
+      let query = 'SELECT id, storeId, categoryId, price, discount, quantity, star rate, status, reasonRejected, createdAt, updatedAt, \
         nameFa `title.fa`, nameEn `title.en` \
         FROM `product`'
 
@@ -66,14 +66,14 @@ const self = module.exports = {
       }
 
       query = 'SELECT p.*, \
-        ph.id `images.id`, phf.path `images.path`, phf.name `images.name`, \
-        c.nameFa `category.fa`, c.nameEn `category.en`, \
-        s.nameFa `store.fa`, s.nameEn `store.en` \
+        ph.id `[images].id`, phf.path `[images].path`, phf.name `[images].name`, \
+        c.id `category.id`, c.nameFa `category.title.fa`, c.nameEn `category.title.en`, \
+        s.id `store.id`, s.nameFa `store.title.fa`, s.nameEn `store.title.en` \
       FROM ('+query+') p \
         LEFT JOIN `product_photo` `ph` ON ph.productId = p.id \
           LEFT JOIN `file` `phf` ON phf.id = ph.fileId \
-        LEFT JOIN `category` `c` ON c.id = p.category_id \
-        LEFT JOIN `store` `s` ON s.id = p.store_id'
+        LEFT JOIN `category` `c` ON c.id = p.categoryId \
+        LEFT JOIN `store` `s` ON s.id = p.storeId'
 
       if(sort) {
         query += ` ORDER BY ?`
@@ -89,6 +89,8 @@ const self = module.exports = {
         list.forEach(item => {
           item.image = (item.images.length > 0) ? item.images[0] : []
           delete item.images
+          delete item.storeId
+          delete item.categoryId
           finalList.push(item)
         })
         resolve(finalList)
@@ -133,6 +135,9 @@ const self = module.exports = {
         rows.forEach((item, index) => {
           delete rows[index].status
           delete rows[index].reasonRejected
+          delete rows[index].createdAt
+          delete rows[index].updatedAt
+          delete rows[index].category
           rows[index].image = (item.image.length !== 0) ? `${sails.config.params.apiUrl}${rows[index].image.path}${rows[index].image.name}` : null
         })
         resolve(rows)
@@ -198,7 +203,7 @@ const self = module.exports = {
   info: (criteria) => {
     return new Promise((resolve, reject) =>
     {
-      let query = 'SELECT id, storeId store_id, categoryId category_id, price, discount, quantity, star, weight, status, reasonRejected, createdAt, updatedAt, \
+      let query = 'SELECT id, storeId, categoryId, price, discount, quantity, star rate, weight, status, reasonRejected, createdAt, updatedAt, \
         nameFa `title.fa`, nameEn `title.en`, \
         descriptionFa `description.fa`, descriptionEn `description.en` \
         FROM `product`'
@@ -223,14 +228,14 @@ const self = module.exports = {
       }
 
       query = 'SELECT p.*, \
-        ph.id `images.id`, phf.path `images.path`, phf.name `images.name`, \
-        c.nameFa `category.fa`, c.nameEn `category.en`, \
-        s.nameFa `store.fa`, s.nameEn `store.en` \
+        ph.id `[images].id`, phf.path `[images].path`, phf.name `[images].name`, \
+        c.id `category.id`, c.nameFa `category.title.fa`, c.nameEn `category.title.en`, \
+        s.id `store.id`, s.nameFa `store.title.fa`, s.nameEn `store.title.en` \
       FROM ('+query+') p \
         LEFT JOIN `product_photo` `ph` ON ph.productId = p.id \
           LEFT JOIN `file` `phf` ON phf.id = ph.fileId \
-        LEFT JOIN `category` `c` ON c.id = p.category_id \
-        LEFT JOIN `store` `s` ON s.id = p.store_id'
+        LEFT JOIN `category` `c` ON c.id = p.categoryId \
+        LEFT JOIN `store` `s` ON s.id = p.storeId'
 
       Product.query(query, dataQuery, (err, rows) => {
         if (err || rows.length === 0) return reject('موردی یافت نشد.')
@@ -245,6 +250,8 @@ const self = module.exports = {
     return new Promise((resolve, reject) =>
     {
       self.info({id}).then(item => {
+        delete item.storeId
+        delete item.categoryId
         item.images = item.images.map(image => ({id: image.id, name: image.name, path: `${sails.config.params.apiUrl}${image.path}${image.name}`}))
         resolve(item)
       }, reject)
@@ -255,6 +262,8 @@ const self = module.exports = {
     return new Promise((resolve, reject) =>
     {
       self.info({id, storeId, status: {'!=':'deleted'}}).then(item => {
+        delete item.storeId
+        delete item.categoryId
         item.images = item.images.map(image => ({id: image.id, name: image.name, path: `${sails.config.params.apiUrl}${image.path}${image.name}`}))
         resolve(item)
       }, reject)
@@ -265,6 +274,8 @@ const self = module.exports = {
     return new Promise((resolve, reject) =>
     {
       self.info({id, status: 'accepted'}).then(item => {
+        delete item.storeId
+        delete item.categoryId
         delete item.status
         delete item.reasonRejected
         item.images = item.images.map(image => `${sails.config.params.apiUrl}${image.path}${image.name}`)

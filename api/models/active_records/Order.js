@@ -42,7 +42,7 @@ module.exports = {
       required: true,
       size: 20
     },
-    quantity: {
+    count: {
       type: 'integer',
       required: true,
       size: 11,

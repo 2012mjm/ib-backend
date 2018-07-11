@@ -49,7 +49,7 @@ const self = module.exports = {
   list: (criteria, page, count, sort) => {
     return new Promise((resolve, reject) =>
     {
-      let query = 'SELECT id, number, amount, customerId customer_id, createdAt, status, reasonRejected \
+      let query = 'SELECT id, number, amount, customerId, createdAt, status, reasonRejected \
         FROM `invoice`'
 
       let dataQuery = []
@@ -74,11 +74,11 @@ const self = module.exports = {
       }
 
       query = 'SELECT i.*, \
-        c.mobile `customer.mobile`, c.name `customer.name`, \
-        o.id `orders.id`, o.quantity `orders.quantity`, o.price `orders.price`, o.productId `orders.product_id`, op.nameFa `orders.product_name_fa`, \
-        p.id `payments.id`, p.amount `payments.amount`, p.trackingCode `payments.trackingCode`, p.reffererCode `payments.reffererCode`, p.statusCode `payments.statusCode`, p.status `payments.status`, p.type `payments.type`, p.createdAt `payments.createdAt` \
+        c.id `customer.id`, c.mobile `customer.mobile`, c.name `customer.name`, \
+        o.id `[orders].id`, o.count `[orders].count`, o.price `[orders].price`, o.productId `[orders].product.id`, op.nameFa `[orders].product.name.fa`, op.nameEn `[orders].product.name.en`, \
+        p.id `[payments].id`, p.amount `[payments].amount`, p.trackingCode `[payments].trackingCode`, p.reffererCode `[payments].reffererCode`, p.statusCode `[payments].statusCode`, p.status `[payments].status`, p.type `[payments].type`, p.createdAt `[payments].createdAt` \
       FROM ('+query+') i \
-        LEFT JOIN `customer` `c` ON c.id = i.customer_id \
+        LEFT JOIN `customer` `c` ON c.id = i.customerId \
         LEFT JOIN `order` `o` ON o.invoiceId = i.id \
           LEFT JOIN `product` `op` ON op.id = o.productId \
         LEFT JOIN `payment` `p` ON p.invoiceId = i.id'
@@ -92,7 +92,13 @@ const self = module.exports = {
         if (err || rows.length === 0) return reject('موردی یافت نشد.')
 
         list = ModelHelper.ORM(rows)
-        resolve(list)
+
+        finalList = []
+        list.forEach(item => {
+          delete item.customerId
+          finalList.push(item)
+        })
+        resolve(finalList)
       })
     })
   },

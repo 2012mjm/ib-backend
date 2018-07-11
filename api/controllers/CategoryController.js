@@ -25,6 +25,18 @@ module.exports = {
 		})
 	},
 
+	listPanel: (req, res) => {
+		if(['manager', 'store'].indexOf(req.token.role) === -1) {
+			return res.json(422, ErrorService.filter('شما دسترسی انجام این عمل را ندارید.'))
+		}
+		
+		CategoryService.listByManagerAndStore().then(result => {
+			return res.json(200, result)
+		}, (err) => {
+			return res.json(422, ErrorService.filter(err))
+		})
+	},
+
 	edit: (req, res) => {
 		if(req.token.role !== 'manager') {
 			return res.json(422, ErrorService.filter('شما دسترسی انجام این عمل را ندارید.'))

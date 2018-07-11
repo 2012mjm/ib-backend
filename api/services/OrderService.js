@@ -25,13 +25,13 @@ const self = module.exports = {
           item.invoice_id = invoice.id
           self.create(item).then(({order, product}) =>
           {
-            amount += (product.price-product.discount)*item.quantity
+            amount += (product.price - (product.discount || 0))*item.count
 
             count++
             result.orders.push({
               id: order.id,
-              quantity: order.quantity,
-              total: order.price * order.quantity,
+              count: order.count,
+              total: order.price * order.count,
               product: {
                 id: product.id,
                 title: {
@@ -71,7 +71,7 @@ const self = module.exports = {
           customerId: attr.customer_id,
           invoiceId: attr.invoice_id,
           productId: attr.id,
-          quantity: attr.quantity || 1,
+          count: attr.count || 1,
           price: product.price,
           weight: product.weight,
           createdAt: moment().format('YYYY-MM-DD HH:mm:ss'),
