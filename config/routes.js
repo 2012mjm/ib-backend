@@ -84,4 +84,11 @@ module.exports.routes = {
   'POST /api/v1/order':                 'Order.add',
 
   'GET /api/v1/invoices':               'Invoice.list',
+
+  'POST /api/v1/attribute':               'Attribute.add',
+  'POST /api/v1/attribute/value':         'Attribute.addValue',
+  'GET /api/v1/attributes':               'Attribute.list',
+  'GET /api/v1/attribute':                'Attribute.info',
+  'PUT /api/v1/attribute':                'Attribute.edit',
+  'DELETE /api/v1/attribute':             'Attribute.delete',
 };

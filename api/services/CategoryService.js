@@ -121,10 +121,6 @@ const self = module.exports = {
   list: () => {
     return new Promise((resolve, reject) =>
     {
-      // `${sails.config.params.apiUrl}${row.photoPath}${row.photoName}`
-
-
-
       const query = 'SELECT c.id, c.parentId `parent_id`, c.nameFa `name.fa`, c.nameEn `name.en`, c.color, CONCAT("'+sails.config.params.apiUrl+'", f.path, f.name) image, \
         c2.id `[child].id`, c2.parentId `[child].parent_id`, c2.nameFa `[child].name.fa`, c2.nameEn `[child].name.en`, c2.color `[child].color`, CONCAT("'+sails.config.params.apiUrl+'", f2.path, f2.name) `[child].image`, \
         c3.id `[child].[child].id`, c3.parentId `[child].[child].parent_id`, c3.nameFa `[child].[child].name.fa`, c3.nameEn `[child].[child].name.en`, c3.color `[child].[child].color`, CONCAT("'+sails.config.params.apiUrl+'", f3.path, f3.name) `[child].[child].image` \
