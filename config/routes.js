@@ -76,6 +76,7 @@ module.exports.routes = {
   'DELETE /api/v1/product/force':       'Product.deleteForce',
   'POST /api/v1/product/photo':         'Product.addPhoto',
   'DELETE /api/v1/product/photo':       'Product.deletePhoto',
+  'POST /api/v1/product/attribute':     'Product.addAttribute',
 
   'POST /api/v1/customer':              'Customer.add',
   'POST /api/v1/customer/login':        'Customer.login',

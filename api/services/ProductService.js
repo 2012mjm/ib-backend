@@ -230,12 +230,18 @@ const self = module.exports = {
       query = 'SELECT p.*, \
         ph.id `[images].id`, phf.path `[images].path`, phf.name `[images].name`, \
         c.id `category.id`, c.nameFa `category.title.fa`, c.nameEn `category.title.en`, \
-        s.id `store.id`, s.nameFa `store.title.fa`, s.nameEn `store.title.en` \
+        s.id `store.id`, s.nameFa `store.title.fa`, s.nameEn `store.title.en`, \
+        pa.id `[attributes].id`, pa.increasePrice `[attributes].increase_price`, pa.descount `[attributes].descount`, \
+        a.key `[attributes].key`, a.titleFa `[attributes].title.fa`, a.titleEn `[attributes].title.en`, \
+        IF(pa.value IS NOT NULL, pa.value, av.value) `[attributes].value` \
       FROM ('+query+') p \
         LEFT JOIN `product_photo` `ph` ON ph.productId = p.id \
           LEFT JOIN `file` `phf` ON phf.id = ph.fileId \
         LEFT JOIN `category` `c` ON c.id = p.categoryId \
-        LEFT JOIN `store` `s` ON s.id = p.storeId'
+        LEFT JOIN `store` `s` ON s.id = p.storeId \
+        LEFT JOIN `product_attribute` `pa` ON pa.productId = p.id \
+          LEFT JOIN `attribute` `a` ON a.id = pa.attributeId \
+          LEFT JOIN `attribute_value` `av` ON av.id = pa.attributeValueId'
 
       Product.query(query, dataQuery, (err, rows) => {
         if (err || rows.length === 0) return reject('موردی یافت نشد.')
@@ -366,6 +372,42 @@ const self = module.exports = {
         })
       })
     })
-  }
+  },
+
+  addAttribute: (attr, storeId=null) => {
+    return new Promise((resolve, reject) =>
+    {
+      if(storeId) {
+        self.permissionStoreForProduct(attr.product_id, storeId).then(product => {
+          self.createAttribute(attr).then(resolve, reject)
+        }, err => {
+          return reject(err)
+        })
+      }
+      else {
+        self.createAttribute(attr).then(resolve, reject)
+      }
+    })
+  },
+
+  createAttribute: (attr) => {
+    return new Promise((resolve, reject) =>
+    {
+      if(!attr.attribute_value_id && !attr.value) return reject('خواص مورد نظر باید یک مقدار داشته باشد.')
+
+      ProductAttribute.create({
+        productId: attr.product_id,
+        attributeId: attr.attribute_id,
+        attributeValueId: attr.attribute_value_id || null,
+        value: attr.value || null,
+        increasePrice: attr.increase_price || null,
+        descount: attr.descount || null,
+        quantity: attr.quantity || null
+      }).exec((err, model) => {
+        if (err) reject('خطایی رخ داده است، دوباره تلاش کنید.')
+        resolve({messages: ['خواص جدید با موفقیت به محصول اضافه شد.'], id: model.id})
+      })
+    })
+  },
 }
 
