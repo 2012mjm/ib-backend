@@ -43,7 +43,7 @@ module.exports = {
       size: 20,
       defaultsTo: null
     },
-    descount: {
+    discount: {
       type: 'integer',
       required: false,
       size: 20,

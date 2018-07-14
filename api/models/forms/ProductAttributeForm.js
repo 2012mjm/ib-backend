@@ -20,7 +20,7 @@ module.exports = {
       type: 'integer',
       required: false,
     },
-    descount: {
+    discount: {
       type: 'integer',
       required: false,
     },

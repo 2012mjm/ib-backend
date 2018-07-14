@@ -231,9 +231,9 @@ const self = module.exports = {
         ph.id `[images].id`, phf.path `[images].path`, phf.name `[images].name`, \
         c.id `category.id`, c.nameFa `category.title.fa`, c.nameEn `category.title.en`, \
         s.id `store.id`, s.nameFa `store.title.fa`, s.nameEn `store.title.en`, \
-        pa.id `[attributes].id`, pa.increasePrice `[attributes].increase_price`, pa.descount `[attributes].descount`, \
-        a.key `[attributes].key`, a.titleFa `[attributes].title.fa`, a.titleEn `[attributes].title.en`, \
-        IF(pa.value IS NOT NULL, pa.value, av.value) `[attributes].value` \
+        a.id `[attributes].id`, a.key `[attributes].key`, a.titleFa `[attributes].title.fa`, a.titleEn `[attributes].title.en`, \
+        pa.id `[attributes].[items].id`, IF(pa.increasePrice IS NOT NULL, pa.increasePrice, 0) `[attributes].[items].increase_price`, IF(pa.discount IS NOT NULL, pa.discount, 0) `[attributes].[items].discount`, \
+        IF(pa.value IS NOT NULL, pa.value, av.value) `[attributes].[items].value` \
       FROM ('+query+') p \
         LEFT JOIN `product_photo` `ph` ON ph.productId = p.id \
           LEFT JOIN `file` `phf` ON phf.id = ph.fileId \
@@ -401,7 +401,7 @@ const self = module.exports = {
         attributeValueId: attr.attribute_value_id || null,
         value: attr.value || null,
         increasePrice: attr.increase_price || null,
-        descount: attr.descount || null,
+        discount: attr.discount || null,
         quantity: attr.quantity || null
       }).exec((err, model) => {
         if (err) reject('خطایی رخ داده است، دوباره تلاش کنید.')

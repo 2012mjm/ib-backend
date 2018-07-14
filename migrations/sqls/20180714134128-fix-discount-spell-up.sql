@@ -1,0 +1,1 @@
+ALTER TABLE `product_attribute` CHANGE `descount` `discount` BIGINT(20) NULL DEFAULT NULL;
