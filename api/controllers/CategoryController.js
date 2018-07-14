@@ -65,5 +65,21 @@ module.exports = {
 			return res.json(422, ErrorService.filter(err))
 		})
 	},
+
+	addAttribute: (req, res) => {
+		if(req.token.role !== 'manager') {
+			return res.json(422, ErrorService.filter('شما دسترسی انجام این عمل را ندارید.'))
+		}
+
+		CategoryAttributeForm.validate(req.body, (err) => {
+			if (err) return res.json(422, ErrorService.filter(err))
+
+			CategoryService.addAttribute(req.body).then(result => {
+				return res.json(200, result)
+			}, (err) => {
+				return res.json(422, ErrorService.filter(err))
+			})
+		})
+	},
 }
 

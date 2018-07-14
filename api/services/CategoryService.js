@@ -174,4 +174,19 @@ const self = module.exports = {
       })
     })
   },
+
+  addAttribute: (attr) => {
+    return new Promise((resolve, reject) =>
+    {
+      CategoryAttribute.create({
+        categoryId: attr.category_id,
+        attributeId: attr.attribute_id,
+        isRequired: attr.is_required || 0,
+        isMultiple: attr.is_multiple || 1
+      }).exec((err, model) => {
+        if (err) return reject(err)
+        resolve({messages: ['خواص با موفقیت به دسته مورد نظر اضافه شد.'], id: model.id})
+      })
+    })
+  },
 }
