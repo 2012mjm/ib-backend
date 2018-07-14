@@ -34,6 +34,12 @@ const self = module.exports = {
               return x
             })
           }
+          else if(item[key]) {
+            x = {}
+            x[matchArr[2]] = item[key]
+            secondItem.push(x)
+          }
+
           if(!newItem[matchArr[1]]) {
             newItem[matchArr[1]] = []
           }
