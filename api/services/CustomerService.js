@@ -15,15 +15,13 @@ const self = module.exports = {
         status: 'inactive',
         createdAt: moment().format('YYYY-MM-DD HH:mm:ss'),
       }).exec(function (err, model) {
-        if (err) {
-          return reject('مشکلی پیش آمده است دوباره تلاش کنید.')
-        }
+        if (err || !model) return reject('مشکلی پیش آمده است دوباره تلاش کنید.')
 
-        if (model) {
+        SmsService.send(model.mobile, `کد فعال سازی حساب کاربری ایرانی بخریم: ${model.mobileKey}`).then(() => {
           resolve({messages: ['کد تایید برای شما ارسال شد.'], id: model.id, is_new: true})
-        } else {
-          reject('مشکلی پیش آمده است دوباره تلاش کنید.')
-        }
+        }, err => {
+          reject('مشکلی پیش آمده است با پشتیبانی تماس حاصل فرمایید.')
+        })
       })
     })
   },
@@ -44,7 +42,11 @@ const self = module.exports = {
           mobileKey: Math.floor(Math.random() * 9999) + 1000,
           expiryMobileKey: moment().add(5, 'minutes').format('YYYY-MM-DD HH:mm:ss')
         }).exec((err, newModels) => {
-          resolve({messages: ['کد تایید برای شما ارسال شد.'], id: model.id, is_new: false})
+          SmsService.send(newModels[0].mobile, `کد فعال سازی حساب کاربری ایرانی بخریم: ${newModels[0].mobileKey}`).then(() => {
+            resolve({messages: ['کد تایید برای شما ارسال شد.'], id: model.id, is_new: false})
+          }, err => {
+            reject('مشکلی پیش آمده است با پشتیبانی تماس حاصل فرمایید.')
+          })
         })
       })
     })
