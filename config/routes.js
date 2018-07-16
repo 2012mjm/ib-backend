@@ -79,6 +79,8 @@ module.exports.routes = {
   'POST /api/v1/product/attribute':     'Product.addAttribute',
 
   'POST /api/v1/customer':              'Customer.add',
+  'GET /api/v1/customer':               'Customer.info',
+  'PUT /api/v1/customer':               'Customer.edit',
   'POST /api/v1/customer/login':        'Customer.login',
   'POST /api/v1/customer/verify-code':  'Customer.verifyCode',
   'GET /api/v1/customers/panel':        'Customer.listPanel',

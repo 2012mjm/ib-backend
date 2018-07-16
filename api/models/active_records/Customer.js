@@ -54,6 +54,11 @@ module.exports = {
       defaultsTo: null,
       model: 'city'
     },
+    addresses: {
+      type: 'text',
+      required: false,
+      defaultsTo: null
+    },
     isVerifiedMobile: {
       type: 'integer',
       required: true,
