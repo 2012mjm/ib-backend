@@ -17,19 +17,13 @@ const self = module.exports = {
         address: attr.address || null,
         postalCode: attr.postal_code || null,
         phone: attr.phone || null,
+        name: attr.name || null,
         status: attr.status || 'draft',
+        amount: 0,
         createdAt: moment().format('YYYY-MM-DD HH:mm:ss'),
       }).exec((err, model) => {
-
-        if (err) {
-          return reject('خطایی رخ داده است، دوباره تلاش کنید.')
-        }
-
-        if (model) {
-          resolve({messages: ['صورت‌حساب جدید با موفقیت ایجاد شد.'], invoice: model})
-        } else {
-          reject('خطایی رخ داده است، دوباره تلاش کنید.')
-        }
+        if (err || !model) return reject(err)
+        resolve({messages: ['صورت‌حساب جدید با موفقیت ایجاد شد.'], invoice: model})
       })
     })
   },
@@ -122,5 +116,26 @@ const self = module.exports = {
       }, reject)
     })
   },
+
+  verify: (id, customerId) => {
+    return new Promise((resolve, reject) =>
+    {
+      Invoice.findOne(id).exec((err, model) => {
+        if(err || !model) return reject('صورت‌حساب مورد نظر یافت نشد.')
+
+        if(model.customerId !== customerId) return reject('شما به این صورت‌حساب دسترسی ندارید.')
+
+        self.update(id, {status: 'pending'}).then(() => {
+
+
+          //zarinpal
+
+          resolve(model)
+        }, () => {
+          reject('خطایی رخ داده است، دوباره تلاش کنید.')
+        })
+      })
+    })
+  }
 }
 

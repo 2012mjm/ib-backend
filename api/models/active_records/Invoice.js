@@ -55,6 +55,12 @@ module.exports = {
       size: 45,
       defaultsTo: null
     },
+    name: {
+      type: 'string',
+      required: false,
+      size: 128,
+      defaultsTo: null
+    },
     createdAt: {
       type: 'datetime',
       required: true

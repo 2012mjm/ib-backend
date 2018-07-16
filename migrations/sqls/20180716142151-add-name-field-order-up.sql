@@ -1,0 +1,1 @@
+ALTER TABLE `invoice` ADD `name` VARCHAR(128) NULL AFTER `phone`;

@@ -88,6 +88,7 @@ module.exports.routes = {
   'POST /api/v1/order':                 'Order.add',
 
   'GET /api/v1/invoices':               'Invoice.list',
+  'POST /api/v1/invoice/verify':        'Invoice.verify',
 
   'POST /api/v1/attribute':               'Attribute.add',
   'POST /api/v1/attribute/value':         'Attribute.addValue',

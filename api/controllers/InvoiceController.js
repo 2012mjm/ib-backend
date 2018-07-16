@@ -32,4 +32,16 @@ module.exports = {
 			return res.json(422, ErrorService.filter('شما دسترسی انجام این عمل را ندارید.'))
 		}
 	},
+
+	verify: (req, res) => {
+		if(['customer'].indexOf(req.token.role) === -1) {
+			return res.json(422, ErrorService.filter('شما دسترسی انجام این عمل را ندارید.'))
+		}
+
+		InvoiceService.verify(req.body.invoice_id, req.token.customerId).then((result) => {
+			return res.json(200, result)
+		}, (err) => {
+			return res.json(422, ErrorService.filter(err))
+		})
+	},
 }

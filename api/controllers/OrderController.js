@@ -5,10 +5,6 @@ module.exports = {
 			return res.json(422, ErrorService.filter('شما دسترسی انجام این عمل را ندارید.'))
 		}
 
-		if(req.body.products) {
-			req.body.products = JSON.parse(req.body.products)
-		}
-
 		if(req.token.role === 'customer') {
 			req.body.customer_id = req.token.customerId
 			delete req.body.status
