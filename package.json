@@ -36,7 +36,8 @@
     "sails-db-migrate": "^1.5.0",
     "sails-disk": "~0.10.9",
     "sails-mysql": "^0.11.5",
-    "uuid": "^3.0.1"
+    "uuid": "^3.0.1",
+    "zarinpal-checkout": "^0.2.7"
   },
   "devDependencies": {
     "sails-hook-autoreload": "^0.14.1",

@@ -76,4 +76,8 @@ module.exports.policies = {
       'login': true,
       'verifyCode': true
     },
+
+    'PaymentController': {
+      'verify': true,
+    },
 };

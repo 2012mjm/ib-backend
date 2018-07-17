@@ -4,65 +4,66 @@ const moment = require('moment')
 
 const self = module.exports = {
 
-  add: (attr) => {
+  add: (cart, invoice) => {
     return new Promise((resolve, reject) =>
     {
       let result = {invoice: {}, orders: []}
 
-      InvoiceService.add(attr).then(({invoice}) => {
-        let productCount = attr.cart.length
-        result.invoice = {
-          id: invoice.id,
-          number: invoice.number,
-          total: 0
-        }
+      let productCount = cart.length
+      result.invoice = {
+        id: invoice.id,
+        number: invoice.number,
+        total: 0
+      }
+      result.receiver = {
+        postal_code: invoice.postalCode,
+        phone: invoice.phone,
+        name: invoice.name,
+        city_id: invoice.cityId,
+        address: invoice.address
+      }
 
-        let count = 0
-        let amount = 0
-        for(let i=0; i<productCount; i++)
+      let count = 0
+      let amount = 0
+      for(let i=0; i<productCount; i++)
+      {
+        let item = cart[i]
+        item.customer_id = invoice.customerId
+        item.invoice_id = invoice.id
+        self.create(item).then(({order, product}) =>
         {
-          let item = attr.cart[i]
-          item.customer_id = attr.customer_id
-          item.invoice_id = invoice.id
-          self.create(item).then(({order, product}) =>
-          {
-            amount += order.price * order.count
+          amount += order.price * order.count
 
-            count++
-            result.orders.push({
-              id: order.id,
-              count: order.count,
-              total: order.price * order.count,
-              product: {
-                id: product.id,
-                title: {
-                  fa: product.nameFa,
-                  en: product.nameEn
-                },
-                price: product.price,
-                discount: product.discount,
-              }
-            })
-
-            if(count >= productCount) {
-              InvoiceService.update(invoice.id, {amount}).then()
-              result.invoice.total = amount
-              resolve(Object.assign({messages: ['سفارشات شما ثبت شد.']}, result))
-            }
-          }, err => {
-            count++
-            if(count >= productCount && result.orders.length > 0) {
-              InvoiceService.update(invoice.id, {amount}).then()
-              result.invoice.total = amount
-              resolve(Object.assign({messages: ['سفارشات شما ثبت شد.']}, result))
-            } else {
-              reject('مشکلی پیش آمده است دوباره تلاش کنید.')
+          count++
+          result.orders.push({
+            id: order.id,
+            count: order.count,
+            total: order.price * order.count,
+            product: {
+              id: product.id,
+              title: {
+                fa: product.nameFa,
+                en: product.nameEn
+              },
+              price: product.price,
+              discount: product.discount,
             }
           })
-        }
-      }, err => {
-        reject(err)
-      })
+
+          if(count >= productCount) {
+            result.invoice.total = amount
+            resolve(result)
+          }
+        }, err => {
+          count++
+          if(count >= productCount && result.orders.length > 0) {
+            result.invoice.total = amount
+            resolve(result)
+          } else {
+            reject('مشکلی پیش آمده است دوباره تلاش کنید.')
+          }
+        })
+      }
     })
   },
 

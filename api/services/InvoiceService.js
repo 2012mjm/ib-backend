@@ -18,12 +18,12 @@ const self = module.exports = {
         postalCode: attr.postal_code || null,
         phone: attr.phone || null,
         name: attr.name || null,
-        status: attr.status || 'draft',
+        status: attr.status || 'pending',
         amount: 0,
         createdAt: moment().format('YYYY-MM-DD HH:mm:ss'),
       }).exec((err, model) => {
         if (err || !model) return reject(err)
-        resolve({messages: ['صورت‌حساب جدید با موفقیت ایجاد شد.'], invoice: model})
+        resolve(model)
       })
     })
   },
@@ -35,7 +35,7 @@ const self = module.exports = {
         if (err) {
           return reject('خطایی رخ داده است، دوباره تلاش کنید.')
         }
-        resolve({messages: ['صورتحساب مورد نظر با موفقیت ویرایش شد.']})
+        resolve({messages: ['صورتحساب مورد نظر با موفقیت ویرایش شد.'], invoice: model[0]})
       })
     })
   },
@@ -117,25 +117,21 @@ const self = module.exports = {
     })
   },
 
-  verify: (id, customerId) => {
-    return new Promise((resolve, reject) =>
-    {
-      Invoice.findOne(id).exec((err, model) => {
-        if(err || !model) return reject('صورت‌حساب مورد نظر یافت نشد.')
+  // verify: (id, customerId) => {
+  //   return new Promise((resolve, reject) =>
+  //   {
+  //     Invoice.findOne(id).exec((err, model) => {
+  //       if(err || !model) return reject('صورت‌حساب مورد نظر یافت نشد.')
 
-        if(model.customerId !== customerId) return reject('شما به این صورت‌حساب دسترسی ندارید.')
+  //       if(model.customerId !== customerId) return reject('شما به این صورت‌حساب دسترسی ندارید.')
 
-        self.update(id, {status: 'pending'}).then(() => {
-
-
-          //zarinpal
-
-          resolve(model)
-        }, () => {
-          reject('خطایی رخ داده است، دوباره تلاش کنید.')
-        })
-      })
-    })
-  }
+  //       self.update(id, {status: 'pending'}).then(() => {
+  //         resolve(model)
+  //       }, () => {
+  //         reject('خطایی رخ داده است، دوباره تلاش کنید.')
+  //       })
+  //     })
+  //   })
+  // }
 }
 
