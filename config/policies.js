@@ -80,4 +80,8 @@ module.exports.policies = {
     'PaymentController': {
       'verify': true,
     },
+
+    'CityController': {
+      'list': true,
+    },
 };

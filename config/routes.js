@@ -96,4 +96,6 @@ module.exports.routes = {
   'DELETE /api/v1/attribute':           'Attribute.delete',
 
   'GET /api/v1/payment/verify/:trackcode':  'Payment.verify',
+
+  'GET /api/v1/cities':                 'City.list',
 };
