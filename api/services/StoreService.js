@@ -1,3 +1,5 @@
+const TextHelper = require('../../helper/TextHelper')
+
 os = require('os')
 os.tmpDir = os.tmpdir
 const moment = require('moment')
@@ -106,13 +108,13 @@ const self = module.exports = {
               fa: row.ownerFa,
               en: row.ownerEn,
             },
-            description: {
-              fa: row.descriptionFa,
-              en: row.descriptionEn,
-            },
             slogan: {
               fa: row.sloganFa,
               en: row.sloganEn,
+            },
+            description: {
+              fa: TextHelper.ellipse(row.descriptionFa, 200),
+              en: TextHelper.ellipse(row.descriptionEn, 200),
             },
             logo: (row.logoId) ? `${sails.config.params.apiUrl}${row.logoId.path}${row.logoId.name}` : null,
             createdAt: row.createdAt
