@@ -15,6 +15,8 @@ const self = module.exports = {
         nameEn: attr.store_name_en || null,
         ownerFa: attr.owner_fa || null,
         ownerEn: attr.owner_en || null,
+        sloganFa: attr.slogan_fa || null,
+        sloganEn: attr.slogan_en || null,
         descriptionFa: attr.description_fa || null,
         descriptionEn: attr.description_en || null,
         status: 'active',
@@ -105,12 +107,12 @@ const self = module.exports = {
               en: row.ownerEn,
             },
             description: {
-              fa: 'دیجی‌کالا مرجع تخصصی نقد و بررسی و فروش اینترنتی کالا در ایران است. گروه‏‏‌های مختلف کالا مانند کالای دیجیتال، لوازم خانگی، لوازم شخصی، فرهنگ و هنر و ورزش و سرگرمی با تنوعی بی‌نظیر در دیجی‌کالا عرضه می‏‏‏‌شوند...',
-              en: null,
+              fa: row.descriptionFa,
+              en: row.descriptionEn,
             },
             slogan: {
-              fa: 'بررسی، انتخاب و خرید آنلاین',
-              en: null,
+              fa: row.sloganFa,
+              en: row.sloganEn,
             },
             logo: (row.logoId) ? `${sails.config.params.apiUrl}${row.logoId.path}${row.logoId.name}` : null,
             createdAt: row.createdAt
@@ -170,6 +172,10 @@ const self = module.exports = {
           owner: {
             fa: row.ownerFa,
             en: row.ownerEn,
+          },
+          slogan: {
+            fa: row.sloganFa,
+            en: row.sloganEn,
           },
           description: {
             fa: row.descriptionFa,
@@ -235,6 +241,8 @@ const self = module.exports = {
       if(attr.email)          newAttr.email = attr.email
       if(attr.store_name_fa)  newAttr.nameFa = attr.store_name_fa
       if(attr.store_name_en)  newAttr.nameEn = attr.store_name_en
+      if(attr.slogan_fa)      newAttr.sloganFa = attr.slogan_fa
+      if(attr.slogan_en)      newAttr.sloganEn = attr.slogan_en
       if(attr.description_fa) newAttr.descriptionFa = attr.description_fa
       if(attr.description_en) newAttr.descriptionEn = attr.description_en
       if(attr.owner_fa)       newAttr.ownerFa = attr.owner_fa

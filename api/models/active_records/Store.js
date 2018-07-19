@@ -51,6 +51,18 @@ module.exports = {
       size: 45,
       defaultsTo: null
     },
+    sloganFa: {
+      type: 'string',
+      required: false,
+      size: 255,
+      defaultsTo: null
+    },
+    sloganEn: {
+      type: 'string',
+      required: false,
+      size: 255,
+      defaultsTo: null
+    },
     descriptionFa: {
       type: 'text',
       required: false,

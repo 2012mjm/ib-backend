@@ -33,6 +33,16 @@ module.exports = {
       required: false,
       size: 45,
     },
+    slogan_fa: {
+      type: 'string',
+      required: false,
+      size: 255,
+    },
+    slogan_en: {
+      type: 'string',
+      required: false,
+      size: 255,
+    },
     description_fa: {
       type: 'text',
       required: false,
