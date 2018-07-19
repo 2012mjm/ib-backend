@@ -20,6 +20,7 @@ const self = module.exports = {
         SmsService.send(model.mobile, `کد فعال سازی حساب کاربری ایرانی بخریم: ${model.mobileKey}`).then(() => {
           resolve({messages: ['کد تایید برای شما ارسال شد.'], id: model.id, is_new: true})
         }, err => {
+          console.log('signup -> SmsService', err)
           reject('مشکلی پیش آمده است با پشتیبانی تماس حاصل فرمایید.')
         })
       })
@@ -106,6 +107,7 @@ const self = module.exports = {
         SmsService.send(newModels[0].mobile, `کد فعال سازی حساب کاربری ایرانی بخریم: ${newModels[0].mobileKey}`).then(() => {
           resolve('کد تایید برای شما ارسال شد.')
         }, err => {
+          console.log('createVerifyCodeAndSend -> SmsService', err)
           reject('مشکلی پیش آمده است با پشتیبانی تماس حاصل فرمایید.')
         })
       })

@@ -70,9 +70,9 @@ const self = module.exports = {
   create: (attr) => {
     return new Promise((resolve, reject) =>
     {
-      ProductService.findById(attr.id).then(product => {
+      ProductService.infoOne(attr.id).then(product => {
         Order.create({
-          storeId: product.storeId,
+          storeId: product.store.id,
           customerId: attr.customer_id,
           invoiceId: attr.invoice_id,
           productId: attr.id,
@@ -84,7 +84,19 @@ const self = module.exports = {
           if (err || !order) {
             return reject(err)
           }
-          resolve({order, product})
+
+          const outProduct = {
+            id: product.id,
+            price: product.price,
+            discount: product.discount,
+            weight: product.weight,
+            title: product.title,
+            image: (product.images) ? product.images[0] : null,
+            category: product.category,
+            store: product.store,
+          }
+
+          resolve({order, product: outProduct})
         })
       }, err => {
         return reject(err)
