@@ -37,7 +37,7 @@ const self = module.exports = {
     })
   },
 
-  list: (criteria, page, count, sort) => {
+  list: (criteria, page, count, sort, search) => {
     return new Promise((resolve, reject) =>
     {
       let query = 'SELECT id, storeId, categoryId, price, discount, quantity, star rate, status, reasonRejected, createdAt, updatedAt, \
@@ -53,6 +53,10 @@ const self = module.exports = {
         dataQuery.push(criteria[key])
       })
 
+      if(search) {
+        where.push('(nameFa LIKE ? OR nameEn LIKE ? OR descriptionFa LIKE ? OR descriptionEn LIKE ?)')
+        for(let i=1; i<=4; i++) dataQuery.push(`%${search}%`)
+      }
       if(where.length > 0) {
         query += ` WHERE ${where.join(' AND ')}`
       }
@@ -98,10 +102,10 @@ const self = module.exports = {
     })
   },
 
-  listByManager: (criteria, page, count, sort) => {
+  listByManager: (criteria, page, count, sort, search) => {
     return new Promise((resolve, reject) =>
     {
-      self.list(criteria, page, count, sort).then(rows => 
+      self.list(criteria, page, count, sort, search).then(rows => 
         resolve(rows.map(item => ({...item,
           image: (item.image.length !== 0) ? {
             id: item.image.id,
@@ -113,10 +117,10 @@ const self = module.exports = {
     })
   },
 
-  listByStore: (criteria, page, count, sort) => {
+  listByStore: (criteria, page, count, sort, search) => {
     return new Promise((resolve, reject) =>
     {
-      self.list(criteria, page, count, sort).then(rows => 
+      self.list(criteria, page, count, sort, search).then(rows => 
         resolve(rows.map(item => ({...item,
           image: (item.image.length !== 0) ? {
             id: item.image.id,
@@ -128,10 +132,10 @@ const self = module.exports = {
     })
   },
 
-  listAll: (criteria, page, count, sort) => {
+  listAll: (criteria, page, count, sort, search) => {
     return new Promise((resolve, reject) =>
     {
-      self.list(criteria, page, count, sort).then(rows => {
+      self.list(criteria, page, count, sort, search).then(rows => {
         rows.forEach((item, index) => {
           delete rows[index].status
           delete rows[index].reasonRejected

@@ -30,7 +30,8 @@ module.exports = {
 				},
 				req.param('page', 1),
 				req.param('count', 10),
-				req.param('sort', 'createdAt DESC')
+				req.param('sort', 'createdAt DESC'),
+				req.param('search', null),
 			).then(result => {
 				return res.json(200, result)
 			}, (err) => {
@@ -45,7 +46,8 @@ module.exports = {
 				},
 				req.param('page', 1),
 				req.param('count', 10),
-				req.param('sort', 'createdAt DESC')
+				req.param('sort', 'createdAt DESC'),
+				req.param('search', null),
 			).then(result => {
 				return res.json(200, result)
 			}, (err) => {
@@ -65,7 +67,8 @@ module.exports = {
 			},
 			req.param('page', 1),
 			req.param('count', 10),
-			req.param('sort', 'createdAt DESC')
+			req.param('sort', 'createdAt DESC'),
+			req.param('search', null),
 		).then(result => {
 			return res.json(200, result)
 		}, (err) => {
