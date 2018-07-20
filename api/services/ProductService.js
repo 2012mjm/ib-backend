@@ -409,5 +409,15 @@ const self = module.exports = {
       })
     })
   },
+
+  increaseQuantity: (id, count) => {
+    return new Promise((resolve, reject) =>
+    {
+      Product.query('UPDATE `product` SET `quantity` = `quantity` + ? WHERE `id` = ?', [count, id], (err, rows) => {
+        if(err) return reject(err)
+        resolve(rows)
+      })
+    })
+  }
 }
 

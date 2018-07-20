@@ -117,6 +117,47 @@ const self = module.exports = {
     })
   },
 
+  update: (id, attr) => {
+    return new Promise((resolve, reject) =>
+    {
+      Invoice.update(id, attr).exec((err, model) => {
+        if (err) return reject('خطایی رخ داده است، دوباره تلاش کنید.')
+        resolve({messages: ['صورت‌حساب مورد نظر با موفقیت ویرایش شد.'], invoice: model[0]})
+      })
+    })
+  },
+
+  expiryCron: () => {
+    return new Promise((resolve, reject) =>
+    {
+      let query = 'SELECT i.id, i.createdAt, i.status, \
+        o.id `[orders].id`, o.count `[orders].count`, \
+        p.id `[orders].product.id`, p.quantity `[orders].product.quantity` \
+        FROM `invoice` i \
+        LEFT JOIN `order` o ON o.invoiceId = i.id \
+          LEFT JOIN `product` p ON p.id = o.productId \
+        WHERE TIMESTAMPDIFF(MINUTE, i.createdAt, ?) > ? AND i.status = ?'
+
+      Invoice.query(query, [moment().format('YYYY-MM-DD HH:mm:ss'), 25, 'pending'], (err, rows) => {
+        if (err || rows.length === 0) return reject('موردی یافت نشد.')
+
+        list = ModelHelper.ORM(rows)
+        list.forEach(invoice => {
+          // increate quantitiy product
+          invoice.orders.forEach(order => {
+            ProductService.increaseQuantity(order.product.id, order.count).then(()=>{},()=>{})
+          })
+          // update invoice with rejected status
+          self.update(invoice.id, {
+            status: 'rejected',
+            reasonRejected: 'توسط سیستم منقضی شده است.'
+          }).then(()=>{},()=>{})
+        })
+        resolve(list)
+      })
+    })
+  }
+
   // verify: (id, customerId) => {
   //   return new Promise((resolve, reject) =>
   //   {

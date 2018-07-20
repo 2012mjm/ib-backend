@@ -71,6 +71,8 @@ const self = module.exports = {
     return new Promise((resolve, reject) =>
     {
       ProductService.infoOne(attr.id).then(product => {
+        if(product.quantity < attr.count) return reject(`موجودی محصول "${product.title.fa}" کافی نمی‌باشد.`)
+
         Order.create({
           storeId: product.store.id,
           customerId: attr.customer_id,
@@ -84,6 +86,9 @@ const self = module.exports = {
           if (err || !order) {
             return reject(err)
           }
+
+          // Decrease count product quantity for pending order
+          ProductService.update(product.id, {quantity: product.quantity - attr.count}).then(()=>{},()=>{})
 
           const outProduct = {
             id: product.id,
