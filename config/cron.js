@@ -8,5 +8,15 @@ module.exports.cron = {
                 console.log('expiryInvoice :: reject', err)
             })
         }
+    },
+    expiryMobileVerifyCustomer: {
+        schedule: '1 1 */1 * * *',
+        onTick: function () {
+            CustomerService.expiryMobileVerifyCron().then(res => {
+                console.log('expiryMobileVerifyCustomer :: resolve', res)
+            }, err => {
+                console.log('expiryMobileVerifyCustomer :: reject', err)
+            })
+        }
     }
 }

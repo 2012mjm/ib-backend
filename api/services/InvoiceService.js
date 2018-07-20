@@ -157,22 +157,5 @@ const self = module.exports = {
       })
     })
   }
-
-  // verify: (id, customerId) => {
-  //   return new Promise((resolve, reject) =>
-  //   {
-  //     Invoice.findOne(id).exec((err, model) => {
-  //       if(err || !model) return reject('صورت‌حساب مورد نظر یافت نشد.')
-
-  //       if(model.customerId !== customerId) return reject('شما به این صورت‌حساب دسترسی ندارید.')
-
-  //       self.update(id, {status: 'pending'}).then(() => {
-  //         resolve(model)
-  //       }, () => {
-  //         reject('خطایی رخ داده است، دوباره تلاش کنید.')
-  //       })
-  //     })
-  //   })
-  // }
 }
 

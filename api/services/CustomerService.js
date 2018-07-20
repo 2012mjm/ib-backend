@@ -236,5 +236,28 @@ const self = module.exports = {
         })
       }, reject)
     })
+  },
+
+  update: (id, attr) => {
+    return new Promise((resolve, reject) =>
+    {
+      Customer.update(id, attr).exec((err, model) => {
+        if (err) return reject('خطایی رخ داده است، دوباره تلاش کنید.')
+        resolve({messages: ['اطلاعات مشتری مورد نظر با موفقیت ویرایش شد.'], invoice: model[0]})
+      })
+    })
+  },
+
+  expiryMobileVerifyCron: () => {
+    return new Promise((resolve, reject) =>
+    {
+      Customer.find().where({expiryMobileKey: {'<':moment().format('YYYY-MM-DD HH:mm:ss')}}).exec((err, rows) => {
+        if(err || !rows) return reject(err)
+        rows.forEach(row => {
+          self.update(row.id, {mobileKey: null, expiryMobileKey: null}).then(()=>{},()=>{})
+        })
+        resolve(rows)
+      })
+    })
   }
 }
