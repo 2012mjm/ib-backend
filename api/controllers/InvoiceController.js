@@ -33,6 +33,26 @@ module.exports = {
 		}
 	},
 
+	info: (req, res) => {
+		if(req.token.role === 'manager') {
+			InvoiceService.infoByManager(req.param('id', null)).then(result => {
+				return res.json(200, result)
+			}, (err) => {
+				return res.json(422, ErrorService.filter(err))
+			})
+		}
+		else if(req.token.role === 'customer') {
+			InvoiceService.infoByCustomer(req.param('id', null), req.token.customerId).then(result => {
+				return res.json(200, result)
+			}, (err) => {
+				return res.json(422, ErrorService.filter(err))
+			})
+		}
+		else {
+			return res.json(422, ErrorService.filter('شما دسترسی انجام این عمل را ندارید.'))
+		}
+	},
+
 	add: (req, res) => {
 		if(['customer', 'manager'].indexOf(req.token.role) === -1) {
 			return res.json(422, ErrorService.filter('شما دسترسی انجام این عمل را ندارید.'))

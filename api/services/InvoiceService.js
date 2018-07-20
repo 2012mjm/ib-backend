@@ -117,6 +117,73 @@ const self = module.exports = {
     })
   },
 
+  info: (criteria) => {
+    return new Promise((resolve, reject) =>
+    {
+      let query = 'SELECT id, number, amount, cityId, address, customerId, postalCode postal_code, phone, name, createdAt, status, reasonRejected FROM `invoice`'
+
+      let dataQuery = []
+      let where = []
+
+      Object.keys(criteria).forEach(key => {
+        if(criteria[key] === null) return delete criteria[key]
+
+        let opt = '='
+        if(typeof criteria[key] === 'object') {
+          opt = Object.keys(criteria[key])[0]
+          criteria[key] = criteria[key][Object.keys(criteria[key])[0]]
+        }
+        where.push(`${key} ${opt} ?`)
+        dataQuery.push(criteria[key])
+      })
+
+      if(where.length > 0) {
+        query += ` WHERE ${where.join(' AND ')}`
+      }
+
+      query = 'SELECT i.*, \
+        province.id `province.id`, province.name `province.name`, city.id `city.id`, city.name `city.name`, \
+        c.id `customer.id`, c.mobile `customer.mobile`, c.name `customer.name`, \
+        o.id `[orders].id`, o.count `[orders].count`, o.price `[orders].price`, o.weight `[orders].weight`, o.productId `[orders].product.id`, op.nameFa `[orders].product.title.fa`, op.nameEn `[orders].product.title.en`, \
+        p.id `[payments].id`, p.amount `[payments].amount`, p.trackingCode `[payments].trackingCode`, p.reffererCode `[payments].reffererCode`, p.statusCode `[payments].statusCode`, p.status `[payments].status`, p.reffererCode `[payments].reffererCode`, p.statusCode `[payments].statusCode`, p.status `[payments].status`, p.type `[payments].type`, p.createdAt `[payments].createdAt` \
+      FROM ('+query+') i \
+        LEFT JOIN `city` ON city.id = i.cityId \
+          LEFT JOIN `province` ON province.id = city.provinceId \
+        LEFT JOIN `customer` `c` ON c.id = i.customerId \
+        LEFT JOIN `order` `o` ON o.invoiceId = i.id \
+          LEFT JOIN `product` `op` ON op.id = o.productId \
+        LEFT JOIN `payment` `p` ON p.invoiceId = i.id'
+      
+      Invoice.query(query, dataQuery, (err, rows) => {
+        if (err || rows.length === 0) return reject('موردی یافت نشد.')
+
+        item = ModelHelper.ORM(rows)[0]
+        delete item.customerId
+        delete item.cityId
+        resolve(item)
+      })
+    })
+  },
+
+  infoByManager: (id) => {
+    return new Promise((resolve, reject) =>
+    {
+      self.info({id}).then(resolve, reject)
+    })
+  },
+
+  infoByCustomer: (id, customerId) => {
+    return new Promise((resolve, reject) =>
+    {
+      self.info({id, customerId}).then(rows => {
+        rows.forEach((item, index) => {
+          delete rows[index].customer
+        })
+        resolve(rows)
+      }, reject)
+    })
+  },
+
   update: (id, attr) => {
     return new Promise((resolve, reject) =>
     {

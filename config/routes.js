@@ -86,6 +86,7 @@ module.exports.routes = {
   'GET /api/v1/customers/panel':        'Customer.listPanel',
 
   'GET /api/v1/invoices':               'Invoice.list',
+  'GET /api/v1/invoice':                'Invoice.info',
   'POST /api/v1/invoice':               'Invoice.add',
 
   'POST /api/v1/attribute':             'Attribute.add',
