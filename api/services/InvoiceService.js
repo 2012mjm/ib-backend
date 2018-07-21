@@ -10,20 +10,32 @@ const self = module.exports = {
   add: (attr) => {
     return new Promise((resolve, reject) =>
     {
-      Invoice.create({
-        customerId: attr.customer_id,
-        number: md5(Date.now()),
-        cityId: attr.city_id || null,
-        address: attr.address || null,
-        postalCode: attr.postal_code || null,
-        phone: attr.phone || null,
-        name: attr.name || null,
-        status: attr.status || 'pending',
-        amount: 0,
-        createdAt: moment().format('YYYY-MM-DD HH:mm:ss'),
-      }).exec((err, model) => {
-        if (err || !model) return reject(err)
-        resolve(model)
+      self.generateNumber().then(number => {
+        Invoice.create({
+          customerId: attr.customer_id,
+          number: number,
+          cityId: attr.city_id || null,
+          address: attr.address || null,
+          postalCode: attr.postal_code || null,
+          phone: attr.phone || null,
+          name: attr.name || null,
+          status: attr.status || 'pending',
+          amount: 0,
+          createdAt: moment().format('YYYY-MM-DD HH:mm:ss'),
+        }).exec((err, model) => {
+          if (err || !model) return reject(err)
+          resolve(model)
+        })
+      })
+    })
+  },
+
+  generateNumber: () => {
+    return new Promise((resolve, reject) =>
+    {
+      Invoice.find().sort('number DESC').limit(1).exec((err, model) => {
+        if (err || !model) return resolve(100000000)
+        resolve(parseInt(model[0].number, 10) + 1)
       })
     })
   },
@@ -78,8 +90,7 @@ const self = module.exports = {
         LEFT JOIN `payment` `p` ON p.invoiceId = i.id'
 
       if(sort) {
-        query += ` ORDER BY ?`
-        dataQuery.push(sort)
+        query += ` ORDER BY ${sort}`
       }
       
       Invoice.query(query, dataQuery, (err, rows) => {

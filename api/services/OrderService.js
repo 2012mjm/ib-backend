@@ -39,15 +39,7 @@ const self = module.exports = {
             id: order.id,
             count: order.count,
             total: order.price * order.count,
-            product: {
-              id: product.id,
-              title: {
-                fa: product.nameFa,
-                en: product.nameEn
-              },
-              price: product.price,
-              discount: product.discount,
-            }
+            product: product
           })
 
           if(count >= productCount) {

@@ -80,8 +80,7 @@ const self = module.exports = {
         LEFT JOIN `store` `s` ON s.id = p.storeId'
 
       if(sort) {
-        query += ` ORDER BY ?`
-        dataQuery.push(sort)
+        query += ` ORDER BY ${sort}`
       }
       
       Product.query(query, dataQuery, (err, rows) => {

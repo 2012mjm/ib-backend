@@ -3,9 +3,10 @@ module.exports = {
 	filter: (err) => {
 		if(err.invalidAttributes) {
 			let output = {}
+			let messages = null
 			if(err.model) {
 				let model = sails.models[err.model.toLowerCase()]
-				let messages = model.validationMessages
+				messages = model.validationMessages
 			}
 			let errValid = err.invalidAttributes
 
