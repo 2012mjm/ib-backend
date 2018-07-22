@@ -34,7 +34,7 @@ const self = module.exports = {
     return new Promise((resolve, reject) =>
     {
       Invoice.find().sort('number DESC').limit(1).exec((err, model) => {
-        if (err || !model) return resolve(100000000)
+        if (err || model.length === 0) return resolve(100000000)
         resolve(parseInt(model[0].number, 10) + 1)
       })
     })
