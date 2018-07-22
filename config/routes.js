@@ -62,6 +62,8 @@ module.exports.routes = {
   'POST /api/v1/category':              'Category.add',
   'GET /api/v1/categories':             'Category.list',
   'GET /api/v1/categories/panel':       'Category.listPanel',
+  'GET /api/v1/category':               'Category.info',
+  'GET /api/v1/category/panel':         'Category.infoPanel',
   'PUT /api/v1/category':               'Category.edit',
   'DELETE /api/v1/category':            'Category.delete',
   'POST /api/v1/category/attribute':    'Category.addAttribute',

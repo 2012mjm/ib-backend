@@ -65,6 +65,7 @@ module.exports.policies = {
 
     'CategoryController': {
       'list': true,
+      'info': true,
     },
 
     'ProductController': {

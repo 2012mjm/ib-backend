@@ -398,17 +398,30 @@ const self = module.exports = {
     {
       if(!attr.attribute_value_id && !attr.value) return reject('خواص مورد نظر باید یک مقدار داشته باشد.')
 
-      ProductAttribute.create({
-        productId: attr.product_id,
-        attributeId: attr.attribute_id,
-        attributeValueId: attr.attribute_value_id || null,
-        value: attr.value || null,
-        increasePrice: attr.increase_price || null,
-        discount: attr.discount || null,
-        quantity: attr.quantity || null
-      }).exec((err, model) => {
-        if (err) reject('خطایی رخ داده است، دوباره تلاش کنید.')
-        resolve({messages: ['خواص جدید با موفقیت به محصول اضافه شد.'], id: model.id})
+      let values = []
+      if(!Array.isArray(attr.attribute_value_id)) {
+        values.push(attr.attribute_value_id)
+      }
+      else if(attr.attribute_value_id) {
+        values = attr.attribute_value_id
+      }
+      else if(attr.value) {
+        values.push(null)
+      }
+
+      values.forEach(attributeValueId => {
+        ProductAttribute.create({
+          productId: attr.product_id,
+          attributeId: attr.attribute_id,
+          attributeValueId: attributeValueId || null,
+          value: attr.value || null,
+          increasePrice: attr.increase_price || null,
+          discount: attr.discount || null,
+          quantity: attr.quantity || null
+        }).exec((err, model) => {
+          if (err) reject('خطایی رخ داده است، دوباره تلاش کنید.')
+          resolve({messages: ['خواص جدید با موفقیت به محصول اضافه شد.'], id: model.id})
+        })
       })
     })
   },

@@ -37,6 +37,26 @@ module.exports = {
 		})
 	},
 
+	info: (req, res) => {
+		CategoryService.info(req.param('id', null)).then(result => {
+			return res.json(200, result)
+		}, (err) => {
+			return res.json(422, ErrorService.filter(err))
+		})
+	},
+
+	infoPanel: (req, res) => {
+		if(['manager', 'store'].indexOf(req.token.role) === -1) {
+			return res.json(422, ErrorService.filter('شما دسترسی انجام این عمل را ندارید.'))
+		}
+		
+		CategoryService.infoByManagerAndStore(req.param('id', null)).then(result => {
+			return res.json(200, result)
+		}, (err) => {
+			return res.json(422, ErrorService.filter(err))
+		})
+	},
+
 	edit: (req, res) => {
 		if(req.token.role !== 'manager') {
 			return res.json(422, ErrorService.filter('شما دسترسی انجام این عمل را ندارید.'))

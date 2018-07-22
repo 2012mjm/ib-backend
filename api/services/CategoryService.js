@@ -175,17 +175,61 @@ const self = module.exports = {
     })
   },
 
+  info: (id) => {
+    return new Promise((resolve, reject) =>
+    {
+      const query = 'SELECT c.id, c.parentId `parent_id`, c.nameFa `name.fa`, c.nameEn `name.en`, c.color, f.path `photo.path`, f.name `photo.name` \
+        FROM category c \
+          LEFT JOIN `file` f ON f.id = c.photoId \
+        WHERE c.id = ?'
+
+      Category.query(query, [id], (err, rows) => {
+        if (err || rows.length === 0) return reject('موردی یافت نشد.')
+
+        list = ModelHelper.ORM(rows)
+        resolve(list[0])
+      })
+    })
+  },
+
+  infoByManagerAndStore: (id) => {
+    return new Promise((resolve, reject) =>
+    {
+      const query = 'SELECT c.id, c.parentId `parent_id`, c.nameFa `name.fa`, c.nameEn `name.en`, c.color, f.path `photo.path`, f.name `photo.name`, \
+        a.id `[product_attributes].id`, a.key `[product_attributes].key`, a.titleFa `[product_attributes].title.fa`, a.titleEn `[product_attributes].title.en`, ca.isMultiple `[product_attributes].is_multiple`, ca.isRequired `[product_attributes].is_required`, \
+        av.id `[product_attributes].[values].id`, av.titleFa `[product_attributes].[values].title.fa`, av.titleEn `[product_attributes].[values].title.en` \
+        FROM category c \
+          LEFT JOIN `file` f ON f.id = c.photoId \
+          LEFT JOIN `category_attribute` `ca` ON ca.categoryId = c.id \
+            LEFT JOIN `attribute` `a` ON a.id = ca.attributeId \
+          LEFT JOIN `attribute_value` `av` ON av.attributeId = a.id \
+        WHERE c.id = ?'
+
+      Category.query(query, [id], (err, rows) => {
+        if (err || rows.length === 0) return reject('موردی یافت نشد.')
+
+        list = ModelHelper.ORM(rows)
+        resolve(list[0])
+      })
+    })
+  },
+
   addAttribute: (attr) => {
     return new Promise((resolve, reject) =>
     {
-      CategoryAttribute.create({
-        categoryId: attr.category_id,
-        attributeId: attr.attribute_id,
-        isRequired: attr.is_required || 0,
-        isMultiple: attr.is_multiple || 1
-      }).exec((err, model) => {
-        if (err) return reject(err)
-        resolve({messages: ['خواص با موفقیت به دسته مورد نظر اضافه شد.'], id: model.id})
+      CategoryAttribute.findOne({categoryId: attr.category_id, attributeId: attr.attribute_id}).exec((err, model) =>
+      {
+        if (model) return reject('این خواص برای دسته مورد نظر قبلا ثبت شده است.')
+
+        CategoryAttribute.create({
+          categoryId: attr.category_id,
+          attributeId: attr.attribute_id,
+          isRequired: (attr.is_required === null) ? 0 : attr.is_required,
+          isMultiple: (attr.is_multiple === null) ? 1 : attr.is_multiple
+        }).exec((err, model) => {
+          if (err) return reject(err)
+          resolve({messages: ['خواص با موفقیت به دسته مورد نظر اضافه شد.'], id: model.id})
+        })
       })
     })
   },

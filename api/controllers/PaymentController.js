@@ -9,22 +9,18 @@ module.exports = {
 			PaymentService.zarinpalVerify(payment.amount, authority).then(zarinpalResult => {
 				PaymentService.update(payment.id, {reffererCode: zarinpalResult.RefID, statusCode: zarinpalResult.status, status}).then(result => {
 					InvoiceService.paid(payment.invoiceId).then(() => {
-						res.redirect(`ibapp://payment?status=success&invoice_id=${payment.invoiceId}`)
+						res.redirect(`ibapp://link/invoice`)
 					}, err => {
-						console.log(err)
-						res.redirect(`ibapp://payment?status=error`)
+						res.redirect(`ibapp://link/invoice`)
 					})
 				}, err => {
-					console.log(err)
-					res.redirect(`ibapp://payment?status=error`)
+					res.redirect(`ibapp://link/invoice`)
 				})
 			}, err => {
-				console.log(err)
-				res.redirect(`ibapp://payment?status=error`)
+				res.redirect(`ibapp://link/invoice`)
 			})
 		}, err => {
-			console.log(err)
-			res.redirect(`ibapp://payment?status=error`)
+			res.redirect(`ibapp://link/invoice`)
 		})
 	},
 }

@@ -9,7 +9,7 @@ module.exports = {
       required: true,
     },
     attribute_value_id: {
-      type: 'integer',
+      // type: 'integer',
       required: false,
     },
     value: {
