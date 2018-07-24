@@ -234,6 +234,22 @@ const self = module.exports = {
         resolve(list)
       })
     })
+  },
+
+  check: (id, customerId) => {
+    return new Promise((resolve, reject) =>
+    {
+      Invoice.findOne({id, customerId}).exec((err, row) => {
+        if(err || !row) return reject('صورت‌حساب مورد نظر یافت نشد.')
+        if(row.status === 'paid') {
+          return resolve({status: 'paid', messages: ['پرداخت با موفقیت انجام شد و صورت‌حساب در انتظار بررسی توسط فروشنده است.']})
+        }
+        else if(row.status === 'rejected') {
+          return resolve({status: 'rejected', messages: [row.reasonRejected]})
+        }
+        return resolve({status: row.status})
+      })
+    })
   }
 }
 

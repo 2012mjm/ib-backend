@@ -88,4 +88,16 @@ module.exports = {
 			})
 		})
 	},
+
+	verify: (req, res) => {
+		if(['customer'].indexOf(req.token.role) === -1) {
+			return res.json(422, ErrorService.filter('شما دسترسی انجام این عمل را ندارید.'))
+		}
+
+		InvoiceService.check(req.param('id'), req.token.customerId).then(result => {
+			return res.json(200, result)
+		}, err => {
+			return res.json(422, ErrorService.filter(err))
+		})
+	}
 }

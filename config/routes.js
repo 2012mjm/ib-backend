@@ -90,6 +90,7 @@ module.exports.routes = {
   'GET /api/v1/invoices':               'Invoice.list',
   'GET /api/v1/invoice':                'Invoice.info',
   'POST /api/v1/invoice':               'Invoice.add',
+  'GET /api/v1/invoice/verify':         'Invoice.verify',
 
   'POST /api/v1/attribute':             'Attribute.add',
   'POST /api/v1/attribute/value':       'Attribute.addValue',

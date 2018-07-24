@@ -8,7 +8,7 @@ module.exports = {
 		PaymentService.findNotPaidByTrackingCode(trackingCode).then(payment => {
 			PaymentService.zarinpalVerify(payment.amount, authority).then(zarinpalResult => {
 				PaymentService.update(payment.id, {reffererCode: zarinpalResult.RefID, statusCode: zarinpalResult.status, status}).then(result => {
-					InvoiceService.paid(payment.invoiceId).then(() => {
+					InvoiceService.update(payment.invoiceId, {status: 'paid'}).then(() => {
 						res.redirect(`ibapp://link/invoice`)
 					}, err => {
 						res.redirect(`ibapp://link/invoice`)
@@ -17,6 +17,7 @@ module.exports = {
 					res.redirect(`ibapp://link/invoice`)
 				})
 			}, err => {
+				InvoiceService.update(payment.invoiceId, {status: 'rejected', reasonRejected: 'پرداخت توسط مشتری لغو شده است.'}).then(() => {}).catch(() => {})
 				res.redirect(`ibapp://link/invoice`)
 			})
 		}, err => {
