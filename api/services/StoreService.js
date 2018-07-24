@@ -116,7 +116,7 @@ const self = module.exports = {
               fa: TextHelper.ellipse(row.descriptionFa, 200),
               en: TextHelper.ellipse(row.descriptionEn, 200),
             },
-            logo: (row.logoId) ? `${sails.config.params.apiUrl}${row.logoId.path}${row.logoId.name}` : null,
+            logo: (row.logoId) ? `${sails.config.params.staticUrl}${row.logoId.path}${row.logoId.name}` : null,
             createdAt: row.createdAt
           })
         })
@@ -183,7 +183,7 @@ const self = module.exports = {
             fa: row.descriptionFa,
             en: row.descriptionEn,
           },
-          logo: (row.logoId) ? `${sails.config.params.apiUrl}${row.logoId.path}${row.logoId.name}` : null,
+          logo: (row.logoId) ? `${sails.config.params.staticUrl}${row.logoId.path}${row.logoId.name}` : null,
           createdAt: row.createdAt,
           status: row.status
         })

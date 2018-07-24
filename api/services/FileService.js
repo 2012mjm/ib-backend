@@ -60,7 +60,7 @@ const self = module.exports = {
 				if (err) return reject(err)
 
         if(uploadedFiles.length > 0) return resolve({
-          path: '/'+filePath+'/',
+          path: '/'+type+'/',
           name: fileName+'.'+fileExt,
           size: uploadedFiles[0].size
         })

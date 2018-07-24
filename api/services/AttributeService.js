@@ -133,7 +133,7 @@ const self = module.exports = {
 
       query = 'SELECT a.*, \
         av.id `[values].id`, av.titleFa `[values].title.fa`, av.titleEn `[values].title.en`, av.value `[values].value`, \
-        CONCAT("'+sails.config.params.apiUrl+'", f.path, f.name) `[values].image` \
+        CONCAT("'+sails.config.params.staticUrl+'", f.path, f.name) `[values].image` \
       FROM ('+query+') a \
         LEFT JOIN `attribute_value` `av` ON av.attributeId = a.id \
           LEFT JOIN `file` `f` ON f.id = av.photoId'

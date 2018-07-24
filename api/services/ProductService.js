@@ -109,7 +109,7 @@ const self = module.exports = {
           image: (item.image.length !== 0) ? {
             id: item.image.id,
             name: item.image.name,
-            path: `${sails.config.params.apiUrl}${item.image.path}${item.image.name}`
+            path: `${sails.config.params.staticUrl}${item.image.path}${item.image.name}`
           } : null
         })))
       , reject)
@@ -124,7 +124,7 @@ const self = module.exports = {
           image: (item.image.length !== 0) ? {
             id: item.image.id,
             name: item.image.name,
-            path: `${sails.config.params.apiUrl}${item.image.path}${item.image.name}`
+            path: `${sails.config.params.staticUrl}${item.image.path}${item.image.name}`
           } : null
         })))
       , reject)
@@ -141,7 +141,7 @@ const self = module.exports = {
           delete rows[index].createdAt
           delete rows[index].updatedAt
           delete rows[index].category
-          rows[index].image = (item.image.length !== 0) ? `${sails.config.params.apiUrl}${rows[index].image.path}${rows[index].image.name}` : null
+          rows[index].image = (item.image.length !== 0) ? `${sails.config.params.staticUrl}${rows[index].image.path}${rows[index].image.name}` : null
         })
         resolve(rows)
       }, reject)
@@ -261,7 +261,7 @@ const self = module.exports = {
       self.info({id}).then(item => {
         delete item.storeId
         delete item.categoryId
-        item.images = item.images.map(image => ({id: image.id, name: image.name, path: `${sails.config.params.apiUrl}${image.path}${image.name}`}))
+        item.images = item.images.map(image => ({id: image.id, name: image.name, path: `${sails.config.params.staticUrl}${image.path}${image.name}`}))
         resolve(item)
       }, reject)
     })
@@ -273,7 +273,7 @@ const self = module.exports = {
       self.info({id, storeId, status: {'!=':'deleted'}}).then(item => {
         delete item.storeId
         delete item.categoryId
-        item.images = item.images.map(image => ({id: image.id, name: image.name, path: `${sails.config.params.apiUrl}${image.path}${image.name}`}))
+        item.images = item.images.map(image => ({id: image.id, name: image.name, path: `${sails.config.params.staticUrl}${image.path}${image.name}`}))
         resolve(item)
       }, reject)
     })
@@ -287,7 +287,7 @@ const self = module.exports = {
         delete item.categoryId
         delete item.status
         delete item.reasonRejected
-        item.images = item.images.map(image => `${sails.config.params.apiUrl}${image.path}${image.name}`)
+        item.images = item.images.map(image => `${sails.config.params.staticUrl}${image.path}${image.name}`)
         resolve(item)
       }, reject)
     })
