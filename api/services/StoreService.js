@@ -1,4 +1,5 @@
 const TextHelper = require('../../helper/TextHelper')
+const ModelHelper = require('../../helper/ModelHelper')
 
 os = require('os')
 os.tmpDir = os.tmpdir
@@ -157,36 +158,50 @@ const self = module.exports = {
     })
   },
 
-  info: (attr) => {
+  info: (criteria) => {
     return new Promise((resolve, reject) =>
     {
-      let model = Store.findOne(attr).populate('logoId')
-      model.exec((err, row) => {
-        if(err || !row) return reject('فروشگاه مورد نظر پیدا نشد.')
-        resolve({
-          id: row.id,
-          mobile: row.mobile,
-          email: row.email,
-          title: {
-            fa: row.nameFa,
-            en: row.nameEn,
-          },
-          owner: {
-            fa: row.ownerFa,
-            en: row.ownerEn,
-          },
-          slogan: {
-            fa: row.sloganFa,
-            en: row.sloganEn,
-          },
-          description: {
-            fa: row.descriptionFa,
-            en: row.descriptionEn,
-          },
-          logo: (row.logoId) ? `${sails.config.params.staticUrl}${row.logoId.path}${row.logoId.name}` : null,
-          createdAt: row.createdAt,
-          status: row.status
-        })
+      let query = 'SELECT id, mobile, email, \
+        nameFa `title.fa`, nameEn `title.en`, \
+        ownerFa `owner.fa`, ownerEn `owner.en`, \
+        sloganFa `slogan.fa`, sloganEn `slogan.en`, \
+        descriptionFa `description.fa`, descriptionEn `description.en`, \
+        createdAt, status, logoId \
+        FROM `store`'
+
+      let dataQuery = []
+      let where = []
+
+      Object.keys(criteria).forEach(key => {
+        if(criteria[key] === null) return delete criteria[key]
+
+        let opt = '='
+        if(typeof criteria[key] === 'object') {
+          opt = Object.keys(criteria[key])[0]
+          criteria[key] = criteria[key][Object.keys(criteria[key])[0]]
+        }
+        where.push(`${key} ${opt} ?`)
+        dataQuery.push(criteria[key])
+      })
+
+      if(where.length > 0) {
+        query += ` WHERE ${where.join(' AND ')}`
+      }
+
+      query = 'SELECT s.*, \
+        CONCAT("'+sails.config.params.staticUrl+'", f.path, f.name) logo, \
+        CEIL(AVG(p.star)) rate, COUNT(p.id) product_count \
+        FROM ('+query+') s \
+        LEFT JOIN `file` `f` ON f.id = s.logoId \
+        LEFT JOIN `product` `p` ON p.storeId = s.id'
+
+      Store.query(query, dataQuery, (err, rows) => {
+        if (err || rows.length === 0) return reject('موردی یافت نشد.')
+
+        list = ModelHelper.ORM(rows)
+        list[0].followers = 12
+        delete list[0].logoId
+        resolve(list[0])
       })
     })
   },
