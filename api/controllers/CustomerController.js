@@ -71,7 +71,7 @@ module.exports = {
 			customerId 	= req.token.customerId
 		}
 		
-		CustomerService.info(customerId).then(result => {
+		CustomerService.info({id: customerId}).then(result => {
 			return res.json(200, result)
 		}, (err) => {
 			return res.json(422, ErrorService.filter(err))

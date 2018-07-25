@@ -1,3 +1,5 @@
+const ModelHelper = require('../../helper/ModelHelper')
+
 os = require('os')
 os.tmpDir = os.tmpdir
 const moment = require('moment')
@@ -80,17 +82,12 @@ const self = module.exports = {
             isVerifiedMobile: 1,
             status: 'active'
           }).exec((err, newModels) => {
-            resolve({
-              id: model.id,
-              name: model.name,
-              // phone: model.phone,
-              // postalCode: model.postalCode,
-              // address: model.address,
-              // phone: model.phone,
-              // city_id: model.cityId,
-              addresses: model.addresses,
-              token: JwtService.issue({ customerId: model.id, role: 'customer', isAdmin: false }, true)
-            })
+            self.info({id: model.id}).then(res => {
+              resolve({
+                ...res,
+                token: JwtService.issue({ customerId: model.id, role: 'customer', isAdmin: false }, true)
+              })
+            }, reject)
           })
         }
       })
@@ -214,27 +211,47 @@ const self = module.exports = {
     })
   },
 
-  findById: (id) => {
+  info: (criteria) => {
     return new Promise((resolve, reject) =>
     {
-      Customer.findOne({id}).exec((err, model) => {
-        if (err || !model) return reject('اطلاعات مشتری مورد نظر یافت نشد.')
-        if(model.status === 'banned') return reject('حساب کاربری مشتری مسدود شده است.')
-        resolve(model)
-      })
-    })
-  },
+      let query = 'SELECT id, name, mobile, addresses, isVerifiedMobile is_verified_mobile, createdAt created_at FROM `customer`'
 
-  info: (id) => {
-    return new Promise((resolve, reject) =>
-    {
-      self.findById(id).then(model => {
-        resolve({
-          id: model.id,
-          name: model.name,
-          addresses: model.addresses
-        })
-      }, reject)
+      let dataQuery = []
+      let where = []
+
+      Object.keys(criteria).forEach(key => {
+        if(criteria[key] === null) return delete criteria[key]
+
+        let opt = '='
+        if(typeof criteria[key] === 'object') {
+          opt = Object.keys(criteria[key])[0]
+          criteria[key] = criteria[key][Object.keys(criteria[key])[0]]
+        }
+        where.push(`${key} ${opt} ?`)
+        dataQuery.push(criteria[key])
+      })
+
+      if(where.length > 0) {
+        query += ` WHERE ${where.join(' AND ')}`
+      }
+
+      query = 'SELECT c.*, \
+        SUM(IF(i.status = "pending", 1, 0)) `previous_purchase.pending`, \
+        SUM(IF(i.status = "paid", 1, 0)) `previous_purchase.paid`, \
+        SUM(IF(i.status = "sent", 1, 0)) `previous_purchase.sent`, \
+        SUM(IF(i.status = "rejected", 1, 0)) `previous_purchase.rejected` \
+        FROM ('+query+') c \
+        LEFT JOIN `invoice` `i` ON i.customerId = c.id'
+
+      Customer.query(query, dataQuery, (err, rows) => {
+        if (err || rows.length === 0) return reject('موردی یافت نشد.')
+
+        item = ModelHelper.ORM(rows)[0]
+        item.following = 8
+        item.image = null
+        item.is_verified_mobile = (item.is_verified_mobile === 1) ? true : false
+        resolve(item)
+      })
     })
   },
 
