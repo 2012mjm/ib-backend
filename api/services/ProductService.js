@@ -236,7 +236,9 @@ const self = module.exports = {
         s.id `store.id`, s.nameFa `store.title.fa`, s.nameEn `store.title.en`, \
         a.id `[attributes].id`, a.key `[attributes].key`, a.titleFa `[attributes].title.fa`, a.titleEn `[attributes].title.en`, \
         pa.id `[attributes].[items].id`, IF(pa.increasePrice IS NOT NULL, pa.increasePrice, 0) `[attributes].[items].increase_price`, IF(pa.discount IS NOT NULL, pa.discount, 0) `[attributes].[items].discount`, \
-        IF(pa.value IS NOT NULL, pa.value, av.value) `[attributes].[items].value` \
+        IF(pa.value IS NOT NULL, pa.value, av.value) `[attributes].[items].value`, \
+        IF(pa.value IS NOT NULL, NULL, av.titleFa) `[attributes].[items].title.fa`, \
+        IF(pa.value IS NOT NULL, NULL, av.titleEn) `[attributes].[items].title.en` \
       FROM ('+query+') p \
         LEFT JOIN `product_photo` `ph` ON ph.productId = p.id \
           LEFT JOIN `file` `phf` ON phf.id = ph.fileId \
