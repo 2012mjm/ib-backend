@@ -53,6 +53,16 @@ module.exports = {
       required: false,
       defaultsTo: null
     },
+    status: {
+      type: 'string',
+      required: true,
+      enum: ['pending','sent','rejected']
+    },
+    reasonRejected: {
+      type: 'text',
+      required: false,
+      defaultsTo: null
+    },
     createdAt: {
       type: 'datetime',
       required: true

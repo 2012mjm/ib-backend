@@ -128,6 +128,66 @@ const self = module.exports = {
     })
   },
 
+  listByStore: (criteria, storeId, page, count, sort) => {
+    return new Promise((resolve, reject) =>
+    {
+      let query = 'SELECT * FROM (SELECT i.id, i.createdAt FROM `invoice` `i` \
+        INNER JOIN `order` `o` ON o.invoiceId = i.id \
+          INNER JOIN `product` `p` ON p.id = o.productId AND p.storeId = ?) i'
+
+      let dataQuery = []
+      let where = []
+
+      dataQuery.push(storeId)
+
+      Object.keys(criteria).forEach(key => {
+        if(criteria[key] === null) return delete criteria[key]
+        where.push(`${key} = ?`)
+        dataQuery.push(criteria[key])
+      })
+
+      if(where.length > 0) {
+        query += ` WHERE ${where.join(' AND ')}`
+      }
+      if(count) {
+        query += ` LIMIT ?`
+        dataQuery.push(parseInt(count, 10))
+      }
+      if(count && page) {
+        query += ` OFFSET ?`
+        dataQuery.push((page-1)*count)
+      }
+
+      query = 'SELECT i.*, \
+        o.id `[orders].id`, o.count `[orders].count`, o.price `[orders].price`, o.productId `[orders].product.id`, \
+        p.nameFa `[orders].product.name.fa`, p.nameEn `[orders].product.name.en`, \
+        o.status, o.reasonRejected \
+      FROM ('+query+') i \
+        INNER JOIN `order` `o` ON o.invoiceId = i.id \
+          INNER JOIN `product` `p` ON p.id = o.productId AND p.storeId = ?'
+      
+      dataQuery.push(storeId)
+
+      if(sort) {
+        query += ` ORDER BY ${sort}`
+      }
+
+      Invoice.query(query, dataQuery, (err, rows) => {
+        if (err || rows.length === 0) return reject('موردی یافت نشد.')
+
+        list = ModelHelper.ORM(rows)
+        list = list.map(invoice => {
+          let amount = 0
+          invoice.orders.forEach(order => {
+            amount += order.price * order.count
+          })
+          return {...invoice, amount}
+        })
+        resolve(list)
+      })
+    })
+  },
+
   info: (criteria) => {
     return new Promise((resolve, reject) =>
     {

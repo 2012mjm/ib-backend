@@ -73,6 +73,7 @@ const self = module.exports = {
           count: attr.count || 1,
           price: product.price - product.discount,
           weight: product.weight,
+          status: 'pending',
           createdAt: moment().format('YYYY-MM-DD HH:mm:ss'),
         }).exec((err, order) => {
           if (err || !order) {

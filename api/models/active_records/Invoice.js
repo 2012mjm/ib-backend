@@ -68,7 +68,7 @@ module.exports = {
     status: {
       type: 'string',
       required: true,
-      enum: ['pending','accepted','paid','rejected']
+      enum: ['pending','accepted','paid','sent','rejected']
     },
     reasonRejected: {
       type: 'text',

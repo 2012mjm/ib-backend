@@ -28,6 +28,20 @@ module.exports = {
 				return res.json(422, ErrorService.filter(err))
 			})
 		}
+		else if(req.token.role === 'store') {
+			InvoiceService.listByStore({
+					status: req.param('status', null),
+				},
+				req.token.storeId,
+				req.param('page', 1),
+				req.param('count', 10),
+				req.param('sort', 'createdAt DESC')
+			).then(result => {
+				return res.json(200, result)
+			}, (err) => {
+				return res.json(422, ErrorService.filter(err))
+			})
+		}
 		else {
 			return res.json(422, ErrorService.filter('شما دسترسی انجام این عمل را ندارید.'))
 		}
