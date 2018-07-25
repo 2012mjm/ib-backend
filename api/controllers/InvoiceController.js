@@ -62,6 +62,13 @@ module.exports = {
 				return res.json(422, ErrorService.filter(err))
 			})
 		}
+		else if(req.token.role === 'store') {
+			InvoiceService.infoByStore({id: req.param('id')}, req.token.storeId).then(result => {
+				return res.json(200, result)
+			}, (err) => {
+				return res.json(422, ErrorService.filter(err))
+			})
+		}
 		else {
 			return res.json(422, ErrorService.filter('شما دسترسی انجام این عمل را ندارید.'))
 		}

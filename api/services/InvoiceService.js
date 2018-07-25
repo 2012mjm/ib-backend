@@ -255,6 +255,60 @@ const self = module.exports = {
     })
   },
 
+  infoByStore: (criteria, storeId) => {
+    return new Promise((resolve, reject) =>
+    {
+      let query = 'SELECT id, cityId, address, postalCode postal_code, phone, name, createdAt FROM `invoice`'
+
+      let dataQuery = []
+      let where = []
+
+      Object.keys(criteria).forEach(key => {
+        if(criteria[key] === null) return delete criteria[key]
+
+        let opt = '='
+        if(typeof criteria[key] === 'object') {
+          opt = Object.keys(criteria[key])[0]
+          criteria[key] = criteria[key][Object.keys(criteria[key])[0]]
+        }
+        where.push(`${key} ${opt} ?`)
+        dataQuery.push(criteria[key])
+      })
+
+      if(where.length > 0) {
+        query += ` WHERE ${where.join(' AND ')}`
+      }
+
+      query = 'SELECT i.*, \
+        province.id `province.id`, province.name `province.name`, city.id `city.id`, city.name `city.name`, \
+        o.id `[orders].id`, o.count `[orders].count`, o.price `[orders].price`, o.weight `[orders].weight`, o.productId `[orders].product.id`, \
+        p.nameFa `[orders].product.name.fa`, p.nameEn `[orders].product.name.en`, \
+        o.status, o.reasonRejected \
+      FROM ('+query+') i \
+        LEFT JOIN `city` ON city.id = i.cityId \
+          LEFT JOIN `province` ON province.id = city.provinceId \
+        INNER JOIN `order` `o` ON o.invoiceId = i.id \
+          INNER JOIN `product` `p` ON p.id = o.productId AND p.storeId = ?'
+
+      dataQuery.push(storeId)
+      
+      Invoice.query(query, dataQuery, (err, rows) => {
+        if (err || rows.length === 0) return reject('موردی یافت نشد.')
+
+        item = ModelHelper.ORM(rows)[0]
+        delete item.customerId
+        delete item.cityId
+
+        item.amount = 0
+        item.orders.forEach(order => {
+          item.amount += order.price * order.count
+        })
+
+        resolve(item)
+      })
+    })
+  },
+
   update: (id, attr) => {
     return new Promise((resolve, reject) =>
     {
