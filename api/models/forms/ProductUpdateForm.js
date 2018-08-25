@@ -54,6 +54,12 @@ module.exports = {
       required: false,
       defaultsTo: null
     },
+    dimensions: {
+      type: 'string',
+      required: false,
+      size: 45,
+      defaultsTo: null
+    },
     status: {
       type: 'string',
       required: false,

@@ -20,6 +20,7 @@ const self = module.exports = {
         discount: attr.discount || null,
         quantity: attr.quantity || 0,
         weight: attr.weight || null,
+        dimensions: attr.dimensions || null,
         status: attr.status || 'pending',
         createdAt: moment().format('YYYY-MM-DD HH:mm:ss'),
       }).exec((err, model) => {
@@ -206,7 +207,7 @@ const self = module.exports = {
   info: (criteria) => {
     return new Promise((resolve, reject) =>
     {
-      let query = 'SELECT id, storeId, categoryId, price, discount, quantity, star rate, weight, status, reasonRejected, createdAt, updatedAt, \
+      let query = 'SELECT id, storeId, categoryId, price, discount, quantity, star rate, weight, dimensions, status, reasonRejected, createdAt, updatedAt, \
         nameFa `title.fa`, nameEn `title.en`, \
         descriptionFa `description.fa`, descriptionEn `description.en` \
         FROM `product`'
@@ -326,6 +327,7 @@ const self = module.exports = {
       if(attr.discount)       newAttr.discount = attr.discount
       if(attr.quantity)       newAttr.quantity = attr.quantity
       if(attr.weight)         newAttr.weight = attr.weight
+      if(attr.dimensions)     newAttr.dimensions = attr.dimensions
       if(attr.status)         newAttr.status = attr.status
       if(attr.reasonRejected) newAttr.reasonRejected = attr.reasonRejected
       newAttr.updatedAt       = moment().format('YYYY-MM-DD HH:mm:ss'),

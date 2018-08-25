@@ -1,0 +1,1 @@
+ALTER TABLE `product` ADD `dimensions` VARCHAR(45) NULL AFTER `weight`;
