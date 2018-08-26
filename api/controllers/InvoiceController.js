@@ -90,9 +90,12 @@ module.exports = {
 			{
 				OrderService.add(req.body.cart, invoice).then(result =>
 				{
-					InvoiceService.update(invoice.id, {amount: result.invoice.total}).then(({invoice}) =>
+					InvoiceService.calculateAndUpdate(invoice.id, result.invoice.total, result.orders).then(({invoice}) =>
 					{
-						PaymentService.add(invoice.customerId, invoice.id, invoice.amount).then(url =>
+						result.invoice.shipping_cost = invoice.shippingCost
+						result.invoice.shipping_type = sails.config.params.shippingType[invoice.shippingType]
+
+						PaymentService.add(invoice.customerId, invoice.id, invoice.amount + invoice.shippingCost).then(url =>
 						{
 							return res.json(200, {...result, payment_url: url, messages: ['صورتحساب شما صادر شد.']})
 						}, err => {

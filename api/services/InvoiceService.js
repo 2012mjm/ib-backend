@@ -52,6 +52,53 @@ const self = module.exports = {
     })
   },
 
+  calculateAndUpdate: (id, amount, orders) => {
+    return new Promise((resolve, reject) =>
+    {
+      let shippingCost = 0
+      let shippingType = null
+      let shippingMethod = null
+
+      if(orders.length === 1 && orders[0].count === 1) {
+        if(orders[0].product.dimensions) {
+          dimension = orders[0].product.dimensions.split('*')
+          if(dimension[0] > 45 || dimension[1] > 45 || dimension[2] > 45) {
+            shippingType = 'payment-at-place'
+          }
+        }
+
+        if(orders[0].product.weight && orders[0].product.weight > 25) {
+          shippingType = 'payment-at-place'
+        }
+
+        if(!orders[0].product.weight && !orders[0].product.dimensions) {
+          shippingType = 'payment-at-place'
+        }
+      }
+      else {
+        shippingType = 'payment-at-place'
+      }
+
+      if(shippingType === 'payment-at-place') {
+        shippingCost = 0
+        shippingMethod = 'pickup-truck'
+      }
+      else if (amount > 100000) {
+        shippingMethod = 'bike-delivery'
+        shippingCost = 0
+        shippingType = 'free'
+      }
+      else {
+        shippingMethod = 'bike-delivery'
+        shippingCost = 5000
+        shippingType = 'online'
+      }
+      
+      self.update(id, {amount, shippingCost, shippingType, shippingMethod}).then(resolve, reject)
+    })
+  },
+
+
   list: (criteria, page, count, sort) => {
     return new Promise((resolve, reject) =>
     {

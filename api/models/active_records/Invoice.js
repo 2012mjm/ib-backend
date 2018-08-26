@@ -29,6 +29,22 @@ module.exports = {
       required: true,
       size: 20
     },
+    shippingCost: {
+      type: 'integer',
+      required: false,
+      size: 10,
+      defaultsTo: 0,
+    },
+    shippingType: {
+      type: 'string',
+      required: false,
+      enum: ['payment-at-place','online','free']
+    },
+    shippingMethod: {
+      type: 'string',
+      required: false,
+      enum: ['bike-delivery','pickup-truck']
+    },
     cityId: {
       type: 'integer',
       required: false,

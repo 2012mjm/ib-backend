@@ -88,6 +88,7 @@ const self = module.exports = {
             price: product.price,
             discount: product.discount,
             weight: product.weight,
+            dimensions: product.dimensions,
             title: product.title,
             image: (product.images) ? product.images[0] : null,
             category: product.category,

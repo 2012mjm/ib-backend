@@ -12,4 +12,10 @@ module.exports.params = {
 
   adminEmail: 'info@ibapp.ir',
   adminMobile: '021',
+
+  shippingType: {
+    'payment-at-place': 'پس کرایه',
+    'online': 'آنلاین',
+    'free': 'رایگان'
+  }
 };
