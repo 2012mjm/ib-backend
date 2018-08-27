@@ -72,7 +72,7 @@ const self = module.exports = {
           shippingType = 'payment-at-place'
         }
 
-        if(!orders[0].product.weight && !orders[0].product.dimensions) {
+        if(!orders[0].product.weight || !orders[0].product.dimensions) {
           shippingType = 'payment-at-place'
         }
       }
