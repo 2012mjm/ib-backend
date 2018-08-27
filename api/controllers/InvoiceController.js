@@ -93,7 +93,7 @@ module.exports = {
 					InvoiceService.calculateAndUpdate(invoice.id, result.invoice.total, result.orders).then(({invoice}) =>
 					{
 						result.invoice.shipping_cost = invoice.shippingCost
-						result.invoice.shipping_type = sails.config.params.shippingType[invoice.shippingType]
+						result.invoice.shipping_type = invoice.shippingType
 
 						PaymentService.add(invoice.customerId, invoice.id, invoice.amount + invoice.shippingCost).then(url =>
 						{

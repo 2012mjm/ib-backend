@@ -24,5 +24,13 @@ module.exports = {
       type: 'integer',
       required: true
     },
+    latitude: {
+      type: 'string',
+      required: false
+    },
+    longitude: {
+      type: 'string',
+      required: false
+    },
   },
 };

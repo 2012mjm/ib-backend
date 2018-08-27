@@ -102,4 +102,10 @@ module.exports.routes = {
   'GET /v1/payment/verify/:trackcode':  'Payment.verify',
 
   'GET /v1/cities':                 'City.list',
+
+  'POST /v1/banner':                'Banner.add',
+  'GET /v1/banners':                'Banner.list',
+  'GET /v1/banner':                 'Banner.info',
+  'PUT /v1/banner':                 'Banner.edit',
+  'DELETE /v1/banner':              'Banner.delete',
 };

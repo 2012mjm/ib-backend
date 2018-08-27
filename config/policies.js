@@ -85,4 +85,9 @@ module.exports.policies = {
     'CityController': {
       'list': true,
     },
+
+    'BannerController': {
+      'list': true,
+      'info': true,
+    },
 };

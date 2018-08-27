@@ -3,7 +3,6 @@ const ModelHelper = require('../../helper/ModelHelper')
 os = require('os')
 os.tmpDir = os.tmpdir
 const moment = require('moment')
-const md5 = require('md5')
 
 const self = module.exports = {
 
@@ -17,6 +16,8 @@ const self = module.exports = {
           cityId: attr.city_id || null,
           address: attr.address || null,
           postalCode: attr.postal_code || null,
+          latitude: attr.latitude || null,
+          longitude: attr.longitude || null,
           phone: attr.phone || null,
           name: attr.name || null,
           status: attr.status || 'pending',
@@ -238,7 +239,7 @@ const self = module.exports = {
   info: (criteria) => {
     return new Promise((resolve, reject) =>
     {
-      let query = 'SELECT id, number, amount, cityId, address, customerId, postalCode postal_code, phone, name, createdAt, status, reasonRejected FROM `invoice`'
+      let query = 'SELECT id, number, amount, cityId, address, customerId, postalCode postal_code, latitude, longitude, phone, name, createdAt, status, reasonRejected FROM `invoice`'
 
       let dataQuery = []
       let where = []
@@ -305,7 +306,7 @@ const self = module.exports = {
   infoByStore: (criteria, storeId) => {
     return new Promise((resolve, reject) =>
     {
-      let query = 'SELECT id, cityId, address, postalCode postal_code, phone, name, createdAt FROM `invoice`'
+      let query = 'SELECT id, cityId, address, postalCode postal_code, latitude, longitude, phone, name, createdAt FROM `invoice`'
 
       let dataQuery = []
       let where = []

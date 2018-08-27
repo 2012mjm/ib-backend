@@ -65,6 +65,18 @@ module.exports = {
       size: 11,
       defaultsTo: null
     },
+    latitude: {
+      type: 'string',
+      required: false,
+      size: 128,
+      defaultsTo: null,
+    },
+    longitude: {
+      type: 'string',
+      required: false,
+      size: 128,
+      defaultsTo: null,
+    },
     phone: {
       type: 'string',
       required: false,
