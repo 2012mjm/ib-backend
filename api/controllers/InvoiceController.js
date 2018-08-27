@@ -123,5 +123,25 @@ module.exports = {
 		}, err => {
 			return res.json(422, ErrorService.filter(err))
 		})
-	}
+	},
+
+	edit: (req, res) => {
+		if(req.token.role === 'manager') {
+			InvoiceService.editByManager(parseInt(req.body.id, 10), req.body).then(result => {
+				return res.json(200, result)
+			}, (err) => {
+				return res.json(422, ErrorService.filter(err))
+			})
+		}
+		else if(req.token.role === 'store') {
+			InvoiceService.editByStore(parseInt(req.body.id, 10), req.token.storeId, req.body).then(result => {
+				return res.json(200, result)
+			}, (err) => {
+				return res.json(422, ErrorService.filter(err))
+			})
+		}
+		else {
+			return res.json(422, ErrorService.filter('شما دسترسی انجام این عمل را ندارید.'))
+		}
+	},
 }

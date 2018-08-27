@@ -102,5 +102,25 @@ const self = module.exports = {
       })
     })
   },
+
+  update: (id, attr) => {
+    return new Promise((resolve, reject) =>
+    {
+      Order.update(id, attr).exec((err, model) => {
+        if (err) return reject('خطایی رخ داده است، دوباره تلاش کنید.')
+        resolve({messages: ['سفارش مورد نظر با موفقیت ویرایش شد.'], invoice: model[0]})
+      })
+    })
+  },
+
+  find: (criteria) => {
+    return new Promise((resolve, reject) =>
+    {
+      Order.find(criteria).exec((err, models) => {
+        if (err || models.length === 0) return reject()
+        resolve(models)
+      })
+    })
+  }
 }
 

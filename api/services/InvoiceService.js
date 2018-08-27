@@ -181,7 +181,8 @@ const self = module.exports = {
     {
       let query = 'SELECT * FROM (SELECT i.id, i.createdAt FROM `invoice` `i` \
         INNER JOIN `order` `o` ON o.invoiceId = i.id \
-          INNER JOIN `product` `p` ON p.id = o.productId AND p.storeId = ?) i'
+          INNER JOIN `product` `p` ON p.id = o.productId AND p.storeId = ? \
+          WHERE i.status != "pending" AND i.status != "rejected") i'
 
       let dataQuery = []
       let where = []
@@ -263,7 +264,7 @@ const self = module.exports = {
       query = 'SELECT i.*, \
         province.id `province.id`, province.name `province.name`, city.id `city.id`, city.name `city.name`, \
         c.id `customer.id`, c.mobile `customer.mobile`, c.name `customer.name`, \
-        o.id `[orders].id`, o.count `[orders].count`, o.price `[orders].price`, o.weight `[orders].weight`, o.productId `[orders].product.id`, op.nameFa `[orders].product.title.fa`, op.nameEn `[orders].product.title.en`, \
+        o.id `[orders].id`, o.status `[orders].status`, o.count `[orders].count`, o.price `[orders].price`, o.weight `[orders].weight`, o.productId `[orders].product.id`, op.nameFa `[orders].product.title.fa`, op.nameEn `[orders].product.title.en`, \
         p.id `[payments].id`, p.amount `[payments].amount`, p.trackingCode `[payments].trackingCode`, p.reffererCode `[payments].reffererCode`, p.statusCode `[payments].statusCode`, p.status `[payments].status`, p.reffererCode `[payments].reffererCode`, p.statusCode `[payments].statusCode`, p.status `[payments].status`, p.type `[payments].type`, p.createdAt `[payments].createdAt` \
       FROM ('+query+') i \
         LEFT JOIN `city` ON city.id = i.cityId \
@@ -352,8 +353,46 @@ const self = module.exports = {
           item.amount += order.price * order.count
         })
 
+        item.province     = sails.config.params.adminProvince
+        item.city         = sails.config.params.adminCity
+        item.address      = sails.config.params.adminAddress
+        item.name         = sails.config.params.adminName
+        item.phone        = sails.config.params.adminPhone
+        item.postal_code  = sails.config.params.adminPostalCode
+        item.latitude     = sails.config.params.adminLatitude
+        item.longitude    = sails.config.params.adminLongitude
+
         resolve(item)
       })
+    })
+  },
+
+  editByManager: (id, attr) => {
+    return new Promise((resolve, reject) =>
+    {
+      self.update(id, attr).then(resolve, reject)
+    })
+  },
+
+  editByStore: (id, storeId, attr) => {
+    return new Promise((resolve, reject) =>
+    {
+      if(attr.status !== undefined && attr.status === 'sent') {
+        self.infoByStore({id}, storeId).then(invoice =>
+        {
+          for(let i=0; i<invoice.orders.length; i++)
+          {
+            OrderService.update(invoice.orders[i].id, {status: 'sent'}).then(() =>
+            {
+              if(i >= invoice.orders.length-1) {
+                self.changeToSentStatus(id).then(() => {
+                  resolve({messages: ['صورت‌حساب موردنظر به حالت ارسال شده تغییر وضعیت داده شد']})
+                })
+              }
+            }, reject)
+          }
+        }, reject)
+      }
     })
   },
 
@@ -364,6 +403,21 @@ const self = module.exports = {
         if (err) return reject('خطایی رخ داده است، دوباره تلاش کنید.')
         resolve({messages: ['صورت‌حساب مورد نظر با موفقیت ویرایش شد.'], invoice: model[0]})
       })
+    })
+  },
+
+  changeToSentStatus: (invoiceId) => {
+    return new Promise((resolve, reject) =>
+    {
+      OrderService.find({invoiceId}).then(orders => {
+        for(let i=0; i<orders.length; i++) {
+          if(orders[i].status !== 'sent') {
+            return resolve()
+          }
+        }
+
+        self.update(invoiceId, {status: 'sent'}).then(resolve, reject)
+      }, reject)
     })
   },
 

@@ -91,6 +91,7 @@ module.exports.routes = {
   'GET /v1/invoice':                'Invoice.info',
   'POST /v1/invoice':               'Invoice.add',
   'GET /v1/invoice/verify':         'Invoice.verify',
+  'PUT /v1/invoice':                'Invoice.edit',
 
   'POST /v1/attribute':             'Attribute.add',
   'POST /v1/attribute/value':       'Attribute.addValue',
