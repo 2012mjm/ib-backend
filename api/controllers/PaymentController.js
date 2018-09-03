@@ -9,16 +9,16 @@ module.exports = {
 			PaymentService.zarinpalVerify(payment.amount, authority).then(zarinpalResult => {
 				PaymentService.update(payment.id, {reffererCode: zarinpalResult.RefID, statusCode: zarinpalResult.status, status}).then(result => {
 					InvoiceService.update(payment.invoiceId, {status: 'paid'}).then(() => {
-						res.redirect(`ibapp://link/invoice`)
+						res.redirect(`ibapp://link/invoice/${payment.invoiceId}`)
 					}, err => {
-						res.redirect(`ibapp://link/invoice`)
+						res.redirect(`ibapp://link/invoice/${payment.invoiceId}`)
 					})
 				}, err => {
-					res.redirect(`ibapp://link/invoice`)
+					res.redirect(`ibapp://link/invoice/${payment.invoiceId}`)
 				})
 			}, err => {
 				InvoiceService.update(payment.invoiceId, {status: 'rejected', reasonRejected: 'پرداخت توسط مشتری لغو شده است.'}).then(() => {}).catch(() => {})
-				res.redirect(`ibapp://link/invoice`)
+				res.redirect(`ibapp://link/invoice/${payment.invoiceId}`)
 			})
 		}, err => {
 			res.redirect(`ibapp://link/invoice`)

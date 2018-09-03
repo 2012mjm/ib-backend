@@ -1,4 +1,5 @@
 const ModelHelper = require('../../helper/ModelHelper')
+const _ = require('lodash')
 
 os = require('os')
 os.tmpDir = os.tmpdir
@@ -295,12 +296,56 @@ const self = module.exports = {
   infoByCustomer: (id, customerId) => {
     return new Promise((resolve, reject) =>
     {
-      self.info({id, customerId}).then(rows => {
-        rows.forEach((item, index) => {
-          delete rows[index].customer
+      let query = 'SELECT id, id `invoice.id`, number `invoice.number`, customerId, amount `invoice.total`, shippingCost `invoice.shipping_cost`, shippingType `invoice.shipping_type`, createdAt `invoice.created_at`, \
+          createdAt `paking.created_at`, status `paking.status`, reasonRejected `paking.reason_rejected`, \
+          cityId `receiver.city_id`, postalCode `receiver.postal_code`, address `receiver.address`, \
+          latitude `receiver.latitude`, longitude `receiver.longitude`, phone `receiver.phone`, name `receiver.name` \
+        FROM `invoice` \
+        WHERE id = ? AND customerId = ?'
+
+      query = 'SELECT i.*, \
+        o.id `[orders].id`, o.status `[orders].status`, o.count `[orders].count`, o.price `[orders].price`, \
+        o.productId `[orders].product.id`, op.nameFa `[orders].product.title.fa`, op.nameEn `[orders].product.title.en`, \
+        op.price `[orders].product.price`, op.discount `[orders].product.discount`, \
+        CONCAT("'+sails.config.params.staticUrl+'", oppf.path, oppf.name) `[orders].product.[image].path`, \
+        op.storeId `[orders].product.store.id`, ops.nameFa `[orders].product.store.title.fa`, ops.nameEn `[orders].product.store.title.en`, \
+        p.id `[payments].id`, p.amount `[payments].amount`, p.reffererCode `[payments].reffererCode`, p.statusCode `[payments].statusCode`, p.status `[payments].status`, p.status `[payments].status`, p.type `[payments].type`, p.createdAt `[payments].created_at` \
+      FROM ('+query+') i \
+        LEFT JOIN `customer` `c` ON c.id = i.customerId \
+        LEFT JOIN `order` `o` ON o.invoiceId = i.id \
+          LEFT JOIN `product` `op` ON op.id = o.productId \
+          LEFT JOIN `store` `ops` ON ops.id = op.storeId \
+            LEFT JOIN `product_photo` `opp` ON opp.productId = op.id \
+              LEFT JOIN `file` `oppf` ON oppf.id = opp.fileId \
+        LEFT JOIN `payment` `p` ON p.invoiceId = i.id'
+
+      Invoice.query(query, [id, customerId], (err, rows) => {
+        if (err || rows.length === 0) return reject('موردی یافت نشد.')
+
+        item = ModelHelper.ORM(rows)[0]
+        delete item.id
+        delete item.customerId
+
+        deliveryList = []
+        item.orders = item.orders.map(order => {
+          order.product.image = (order.product.image.length > 0) ? order.product.image[0].path : null
+          order.product.store = {
+            id: order.product.store.id,
+            title: {
+              fa: order.product.store['title.fa'],
+              en: order.product.store['title.en'],
+            }
+          }
+          deliveryList.push({
+            ...order.product.store,
+            status: order.status
+          })
+          return order
         })
-        resolve(rows)
-      }, reject)
+
+        item.delivery = _.uniqBy(deliveryList, 'id')
+        resolve(item)
+      })
     })
   },
 

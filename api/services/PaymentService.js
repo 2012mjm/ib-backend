@@ -55,7 +55,7 @@ const self = module.exports = {
         {
             zarinpal.PaymentRequest({
                 Amount: amount, // In Tomans
-                CallbackURL: `${sails.config.params['apiUrl']}/api/v1/payment/verify/${trackingCode}`,
+                CallbackURL: `${sails.config.params['apiUrl']}/v1/payment/verify/${trackingCode}`,
                 Description: description || 'ایرانی بخریم',
                 Email: sails.config.params['adminEmail'],
                 Mobile: sails.config.params['adminMobile']
