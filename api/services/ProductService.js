@@ -38,10 +38,10 @@ const self = module.exports = {
     })
   },
 
-  list: (criteria, page, count, sort, search) => {
+  list: (criteria, page, count, sort, search, filter) => {
     return new Promise((resolve, reject) =>
     {
-      let query = 'SELECT id, storeId, categoryId, price, discount, quantity, star rate, status, reasonRejected, createdAt, updatedAt, \
+      let query = 'SELECT id, storeId, categoryId, price, discount, quantity, star rate, visit, sale, status, reasonRejected, createdAt, updatedAt, \
         nameFa `title.fa`, nameEn `title.en` \
         FROM `product`'
 
@@ -50,9 +50,23 @@ const self = module.exports = {
 
       Object.keys(criteria).forEach(key => {
         if(criteria[key] === null) return delete criteria[key]
-        where.push(`${key} = ?`)
+        let opt = '='
+        if(typeof criteria[key] === 'object') {
+          opt = Object.keys(criteria[key])[0]
+          criteria[key] = criteria[key][Object.keys(criteria[key])[0]]
+        }
+        where.push(`${key} ${opt} ?`)
         dataQuery.push(criteria[key])
       })
+
+      if(filter.price.from) {
+        where.push('price >= ?')
+        dataQuery.push(filter.price.from)
+      }
+      if(filter.price.to) {
+        where.push('price <= ?')
+        dataQuery.push(filter.price.to)
+      }
 
       if(search) {
         where.push('(nameFa LIKE ? OR nameEn LIKE ? OR descriptionFa LIKE ? OR descriptionEn LIKE ?)')
@@ -81,9 +95,29 @@ const self = module.exports = {
         LEFT JOIN `store` `s` ON s.id = p.storeId'
 
       if(sort) {
-        query += ` ORDER BY ${sort}`
+        switch(sort) {
+          case 'oldest':
+            order = 'p.createdAt ASC'
+            break
+          case 'most_visited':
+            order = 'p.visit DESC'
+            break
+          case 'lowest_visited':
+            order = 'p.visit ASC'
+            break
+          case 'bestselling': case 'most_expensive':
+            order = 'p.sale DESC'
+            break
+          case 'cheapest':
+            order = 'p.sale ASC'
+            break
+          case 'newest': default:
+            order = 'p.createdAt DESC'
+            break
+        }
+        query += ` ORDER BY ${order}`
       }
-      
+
       Product.query(query, dataQuery, (err, rows) => {
         if (err || rows.length === 0) return reject('موردی یافت نشد.')
 
@@ -132,10 +166,10 @@ const self = module.exports = {
     })
   },
 
-  listAll: (criteria, page, count, sort, search) => {
+  listAll: (criteria, page, count, sort, search, filter) => {
     return new Promise((resolve, reject) =>
     {
-      self.list(criteria, page, count, sort, search).then(rows => {
+      self.list(criteria, page, count, sort, search, filter).then(rows => {
         rows.forEach((item, index) => {
           delete rows[index].status
           delete rows[index].reasonRejected

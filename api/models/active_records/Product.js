@@ -77,6 +77,16 @@ module.exports = {
       required: true,
       defaultsTo: '0.00'
     },
+    visit: {
+      type: 'integer',
+      required: true,
+      defaultsTo: 0
+    },
+    sale: {
+      type: 'integer',
+      required: true,
+      defaultsTo: 0
+    },
     status: {
       type: 'string',
       required: true,

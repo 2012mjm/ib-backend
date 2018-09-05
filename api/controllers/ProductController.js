@@ -67,8 +67,14 @@ module.exports = {
 			},
 			req.param('page', 1),
 			req.param('count', 10),
-			req.param('sort', 'createdAt DESC'),
+			req.param('sort', 'newest'),
 			req.param('search', null),
+			{
+				price: {
+					from: req.param('filter_price_from', null),
+					to: req.param('filter_price_to', null)
+				}
+			}
 		).then(result => {
 			return res.json(200, result)
 		}, (err) => {
