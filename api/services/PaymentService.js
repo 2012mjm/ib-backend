@@ -75,7 +75,7 @@ const self = module.exports = {
                 Amount: amount, // In Tomans
                 Authority: authority,
             }).then(response => {
-                if (response.status === 101) return resolve(response)
+                if (response.status === 100) return resolve(response)
                 reject(response)
             }).catch(err => {
                 reject(err)
