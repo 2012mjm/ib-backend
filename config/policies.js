@@ -49,45 +49,45 @@ module.exports.policies = {
 		// feed : ['isNiceToAnimals', 'hasRabbitFood']
 	// }
 
-    '*': ['isAuthorized'], // Everything resctricted here
+    '*': ['isAuthorized', 'beforeAction'], // Everything resctricted here
 
     'ManagerController': {
-      'login': true, // We dont need authorization here, allowing public access
-      'signup': true
+      'login': 'beforeAction', // We dont need authorization here, allowing public access
+      'signup': 'beforeAction'
     },
 
     'StoreController': {
-      'login': true, // We dont need authorization here, allowing public access
-      'signup': true,
-      'list': true,
-      'info': true
+      'login': 'beforeAction', // We dont need authorization here, allowing public access
+      'signup': 'beforeAction',
+      'list': 'beforeAction',
+      'info': 'beforeAction'
     },
 
     'CategoryController': {
-      'list': true,
-      'info': true,
+      'list': 'beforeAction',
+      'info': 'beforeAction',
     },
 
     'ProductController': {
-      'list': true,
-      'info': true
+      'list': 'beforeAction',
+      'info': 'beforeAction'
     },
 
     'CustomerController': {
-      'login': true,
-      'verifyCode': true
+      'login': 'beforeAction',
+      'verifyCode': 'beforeAction'
     },
 
     'PaymentController': {
-      'verify': true,
+      'verify': 'beforeAction',
     },
 
     'CityController': {
-      'list': true,
+      'list': 'beforeAction',
     },
 
     'BannerController': {
-      'list': true,
-      'info': true,
+      'list': 'beforeAction',
+      'info': 'beforeAction',
     },
 };
