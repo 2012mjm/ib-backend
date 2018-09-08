@@ -90,4 +90,8 @@ module.exports.policies = {
       'list': 'beforeAction',
       'info': 'beforeAction',
     },
+
+    'MessageController': {
+      'send': 'beforeAction',
+    },
 };

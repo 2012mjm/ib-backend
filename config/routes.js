@@ -109,4 +109,6 @@ module.exports.routes = {
   'GET /v1/banner':                 'Banner.info',
   'PUT /v1/banner':                 'Banner.edit',
   'DELETE /v1/banner':              'Banner.delete',
+
+  'POST /v1/message':               'Message.send',
 };
