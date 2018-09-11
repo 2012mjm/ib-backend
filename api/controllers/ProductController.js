@@ -104,6 +104,7 @@ module.exports = {
 
 	info: (req, res) => {
 		ProductService.infoOne(req.param('id', null)).then(result => {
+			ProductService.increaseVisit(req.param('id', null)).then().catch()
 			return res.json(200, result)
 		}, (err) => {
 			return res.json(422, ErrorService.filter(err))

@@ -472,6 +472,38 @@ const self = module.exports = {
         resolve(rows)
       })
     })
-  }
+  },
+
+  increaseSale: (id, count) => {
+    return new Promise((resolve, reject) =>
+    {
+      Product.query('UPDATE `product` SET `sale` = `sale` + ? WHERE `id` = ?', [count, id], (err, rows) => {
+        if(err) return reject(err)
+        resolve(rows)
+      })
+    })
+  },
+
+  increaseSaleByInvoiceId: (invoiceId) => {
+    return new Promise((resolve, reject) =>
+    {
+      OrderService.find({invoiceId}).then(orders => {
+        orders.forEach(order => {
+          self.increaseSale(order.productId, order.count).then().catch()
+        })
+        resolve()
+      }, reject)
+    })
+  },
+
+  increaseVisit: (id, count=1) => {
+    return new Promise((resolve, reject) =>
+    {
+      Product.query('UPDATE `product` SET `visit` = `visit` + ? WHERE `id` = ?', [count, id], (err, rows) => {
+        if(err) return reject(err)
+        resolve(rows)
+      })
+    })
+  },
 }
 
