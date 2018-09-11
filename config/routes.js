@@ -111,4 +111,6 @@ module.exports.routes = {
   'DELETE /v1/banner':              'Banner.delete',
 
   'POST /v1/message':               'Message.send',
+
+  'POST /v1/withdraw':              'Withdraw.add',
 };

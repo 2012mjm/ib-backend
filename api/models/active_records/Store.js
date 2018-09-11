@@ -28,6 +28,12 @@ module.exports = {
       size: 255,
       defaultsTo: null
     },
+    credit: {
+      type: 'integer',
+      required: true,
+      size: 20,
+      defaultsTo: '0'
+    },
     ownerFa: {
       type: 'string',
       required: false,

@@ -295,4 +295,68 @@ const self = module.exports = {
       })
     })
   },
+
+  // checkout with store each 72 hours or 3 days
+  checkoutCron: () => {
+    return new Promise((resolve, reject) =>
+    {
+      query = 'SELECT i.id, i.amount, i.number, i.status, \
+          o.storeId `[orders].storeId`, o.price `[orders].price`, o.count `[orders].count` \
+        FROM `invoice` i \
+          INNER JOIN `payment` p ON p.invoiceId = i.id AND p.statusCode = ? AND p.createdAt < ? \
+          LEFT JOIN `order` o ON o.invoiceId = i.id AND o.status = ? \
+        WHERE i.status != ?'
+
+      Invoice.query(query, [100, moment().subtract(3, 'day').format('YYYY-MM-DD HH:mm:ss'), 'sent', 'checkout'], (err, rows) => {
+        if (err || rows.length === 0) return reject('not found')
+
+        const invoices = ModelHelper.ORM(rows)
+
+        for(let i=0; i<invoices.length; i++) {
+          const invoice = invoices[i]
+
+          invoice.orders.forEach(order => {
+            amount = order.price * order.count * (100 - sails.config.params.commissionSystemSales) / 100
+            self.increaseCredit(order.storeId, amount).then().catch()
+          })
+          
+          InvoiceService.update(invoice.id, {status: 'checkout'}).then().catch()
+        }
+
+        resolve(invoices)
+      })
+    })
+  },
+
+  increaseCredit: (id, amount) => {
+    return new Promise((resolve, reject) =>
+    {
+      Product.query('UPDATE `store` SET `credit` = `credit` + ? WHERE `id` = ?', [amount, id], (err, rows) => {
+        if(err) return reject(err)
+        resolve(rows)
+      })
+    })
+  },
+
+  decreaseCredit: (id, amount) => {
+    return new Promise((resolve, reject) =>
+    {
+      Product.query('UPDATE `store` SET `credit` = `credit` - ? WHERE `id` = ?', [amount, id], (err, rows) => {
+        if(err) return reject(err)
+        resolve(rows)
+      })
+    })
+  },
+
+  checkCredit: (id, amount) => {
+    return new Promise((resolve, reject) =>
+    {
+      self.findById(id).then(store => {
+        if(amount > store.credit) return reject(`موجودی کافی نیست، موجودی فعلی شما: ${store.credit} تومان می‌باشد`)
+        resolve(store.credit)
+      }, err => {
+        reject('فروشنده‌ای با این مشخصات یافت نشد.')
+      })
+    })
+  }
 }
