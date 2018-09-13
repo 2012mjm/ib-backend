@@ -41,7 +41,7 @@ const self = module.exports = {
   list: (criteria, page, count, sort, search, filter) => {
     return new Promise((resolve, reject) =>
     {
-      let query = 'SELECT id, storeId, categoryId, price, discount, quantity, star rate, visit, sale, status, reasonRejected, createdAt, updatedAt, \
+      let query = 'SELECT id, storeId, categoryId, price, discount, (price - IF(discount IS NOT NULL, discount, 0)) `price_final`, quantity, star rate, visit, sale, status, reasonRejected, createdAt, updatedAt, \
         nameFa `title.fa`, nameEn `title.en` \
         FROM `product`'
 
@@ -60,11 +60,11 @@ const self = module.exports = {
       })
 
       if(filter.price.from) {
-        where.push('price >= ?')
+        where.push('(price - IF(discount IS NOT NULL, discount, 0)) >= ?')
         dataQuery.push(filter.price.from)
       }
       if(filter.price.to) {
-        where.push('price <= ?')
+        where.push('(price - IF(discount IS NOT NULL, discount, 0)) <= ?')
         dataQuery.push(filter.price.to)
       }
 
@@ -105,11 +105,14 @@ const self = module.exports = {
           case 'lowest_visited':
             order = 'p.visit ASC'
             break
-          case 'bestselling': case 'most_expensive':
+          case 'bestselling':
             order = 'p.sale DESC'
             break
+          case 'most_expensive':
+            order = 'p.price_final DESC'
+            break
           case 'cheapest':
-            order = 'p.sale ASC'
+            order = 'p.price_final ASC'
             break
           case 'newest': default:
             order = 'p.createdAt DESC'
