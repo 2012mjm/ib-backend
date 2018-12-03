@@ -32,6 +32,12 @@ module.exports = {
 				req.param('count', 10),
 				req.param('sort', 'createdAt DESC'),
 				req.param('search', null),
+				{
+                                        price: {
+                                                from: req.param('filter_price_from', null),
+                                                to: req.param('filter_price_to', null)
+                                        }
+                                }
 			).then(result => {
 				return res.json(200, result)
 			}, (err) => {
@@ -48,6 +54,12 @@ module.exports = {
 				req.param('count', 10),
 				req.param('sort', 'createdAt DESC'),
 				req.param('search', null),
+	                        {
+        	                        price: {
+                	                        from: req.param('filter_price_from', null),
+                        	                to: req.param('filter_price_to', null)
+					}
+				}
 			).then(result => {
 				return res.json(200, result)
 			}, (err) => {

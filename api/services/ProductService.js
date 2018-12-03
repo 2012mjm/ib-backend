@@ -63,6 +63,7 @@ const self = module.exports = {
         where.push('(price - IF(discount IS NOT NULL, discount, 0)) >= ?')
         dataQuery.push(filter.price.from)
       }
+
       if(filter.price.to) {
         where.push('(price - IF(discount IS NOT NULL, discount, 0)) <= ?')
         dataQuery.push(filter.price.to)
@@ -139,10 +140,10 @@ const self = module.exports = {
     })
   },
 
-  listByManager: (criteria, page, count, sort, search) => {
+  listByManager: (criteria, page, count, sort, search, filter) => {
     return new Promise((resolve, reject) =>
     {
-      self.list(criteria, page, count, sort, search).then(rows => 
+      self.list(criteria, page, count, sort, search, filter).then(rows => 
         resolve(rows.map(item => ({...item,
           image: (item.image.length !== 0) ? {
             id: item.image.id,
@@ -154,10 +155,10 @@ const self = module.exports = {
     })
   },
 
-  listByStore: (criteria, page, count, sort, search) => {
+  listByStore: (criteria, page, count, sort, search, filter) => {
     return new Promise((resolve, reject) =>
     {
-      self.list(criteria, page, count, sort, search).then(rows => 
+      self.list(criteria, page, count, sort, search, filter).then(rows => 
         resolve(rows.map(item => ({...item,
           image: (item.image.length !== 0) ? {
             id: item.image.id,
